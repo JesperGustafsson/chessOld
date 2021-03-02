@@ -3,10 +3,19 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import styled from 'styled-components'
+
+const Container = styled.div`
+  display: flex;
+  justify-content: space-around;
+`;
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Container>
+      <App player={1}/>
+{/*       <App player={2}/>
+ */}    </Container>
   </React.StrictMode>,
   document.getElementById('root')
 );
