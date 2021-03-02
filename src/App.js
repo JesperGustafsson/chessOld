@@ -241,7 +241,7 @@ function App( { player } ) {
         setCurrentPlayer(newCurrentPlayer);
         setCurrentState("SELECTING");
       });
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
 
