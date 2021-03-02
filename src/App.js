@@ -11,10 +11,10 @@ import { King } from './Pieces/King'
 
 import Board from './Componets/Board'
 
-const socket = io("https://limitless-shelf-54190.herokuapp.com",  { autoConnect: true } );
+const socket = io.connect("https://limitless-shelf-54190.herokuapp.com");
 //const socket = io("http://localhost:4000",  { autoConnect: true } );
 
-
+socket.emit('test')
 
 function App( { player } ) {
 
