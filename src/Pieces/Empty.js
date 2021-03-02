@@ -1,4 +1,3 @@
-import Piece from "./Piece";
 
 export class Empty {
     constructor (player, x, y) {

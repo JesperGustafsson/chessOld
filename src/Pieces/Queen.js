@@ -37,9 +37,9 @@ export class Queen extends Piece {
       if (nextX > -1 && nextX < 8 && nextY > -1 && nextY < 8) {
 
       let nextSquare = board[nextX][nextY];
-      if (nextSquare.player == this.player) {//Is allied
+      if (nextSquare.player === this.player) {//Is allied
         return;
-      } else if (nextSquare.pieceType == "Empty") {
+      } else if (nextSquare.pieceType === "Empty") {
         this.moveUpLeft(nextX, nextY, board, possibleMoves);
       }
       possibleMoves.push([nextX,nextY])
@@ -52,9 +52,9 @@ export class Queen extends Piece {
       if (nextX > -1 && nextX < 8 && nextY > -1 && nextY < 8) {
 
         let nextSquare = board[nextX][nextY];
-        if (nextSquare.player == this.player) {//Is allied
+        if (nextSquare.player === this.player) {//Is allied
           return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
           this.moveUpRight(nextX, nextY, board, possibleMoves);
         }
         possibleMoves.push([nextX,nextY])
@@ -67,9 +67,9 @@ export class Queen extends Piece {
       if (nextX > -1 && nextX < 8 && nextY > -1 && nextY < 8) {
 
         let nextSquare = board[nextX][nextY];
-        if (nextSquare.player == this.player) {//Is allied
+        if (nextSquare.player === this.player) {//Is allied
           return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
           this.moveDownRight(nextX, nextY, board, possibleMoves);
         }
         possibleMoves.push([nextX,nextY])
@@ -82,9 +82,9 @@ export class Queen extends Piece {
       if (nextX > -1 && nextX < 8 && nextY > -1 && nextY < 8) {
 
         let nextSquare = board[nextX][nextY];
-        if (nextSquare.player == this.player) {//Is allied
+        if (nextSquare.player === this.player) {//Is allied
           return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
           this.moveDownLeft(nextX, nextY, board, possibleMoves);
         }
         possibleMoves.push([nextX,nextY])
@@ -95,9 +95,9 @@ export class Queen extends Piece {
       let newX = startX+1;
       if (newX > 7) return;
       let nextSquare = board[newX][startY];
-      if (nextSquare.player == this.player) { //Is allied
+      if (nextSquare.player === this.player) { //Is allied
           return;
-      } else if (nextSquare.pieceType == "Empty") {
+      } else if (nextSquare.pieceType === "Empty") {
           this.moveUp(newX, startY, board, possibleMoves);
       }
   //    board[newX][startY].selected = true;
@@ -109,9 +109,9 @@ export class Queen extends Piece {
     moveRight = (startX, startY, board, possibleMoves) => {
         let newY = startY+1;
         let nextSquare = board[startX][newY];
-        if (!nextSquare || nextSquare.player == this.player) { //Is allied
+        if (!nextSquare || nextSquare.player === this.player) { //Is allied
             return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
             this.moveRight(startX, newY, board, possibleMoves);
         }
     //     board[startX][newY].selected = true;
@@ -123,9 +123,9 @@ export class Queen extends Piece {
     moveLeft = (startX, startY, board, possibleMoves) => {
         let newY = startY-1;
         let nextSquare = board[startX][newY];
-        if (!nextSquare || nextSquare.player == this.player) { //Is allied
+        if (!nextSquare || nextSquare.player === this.player) { //Is allied
             return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
             this.moveLeft(startX, newY, board, possibleMoves);
         }
     //    board[startX][newY].selected = true;
@@ -136,9 +136,9 @@ export class Queen extends Piece {
         let newX = startX-1;
         if (newX < 0) return;
         let nextSquare = board[newX][startY];
-        if (nextSquare.player == this.player) { //Is allied
+        if (nextSquare.player === this.player) { //Is allied
             return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
             this.moveDown(newX, startY, board, possibleMoves);
         }
     //    board[newX][startY].selected = true;

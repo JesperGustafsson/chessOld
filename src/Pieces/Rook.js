@@ -1,5 +1,4 @@
-import { getNodeText } from '@testing-library/react';
-import React from 'react'
+
 import Piece from './Piece'
 
 export class Rook extends Piece {
@@ -8,7 +7,7 @@ export class Rook extends Piece {
       this.hp = 3;
       this.graphic = "♖"
       this.pieceType = 'Rook'
-      this.direction = player == 1 ? 1 : -1;
+      this.direction = player === 1 ? 1 : -1;
      
     }
 
@@ -38,9 +37,9 @@ export class Rook extends Piece {
         let newX = startX+1;
         if (newX > 7) return;
         let nextSquare = board[newX][startY];
-        if (nextSquare.player == this.player) { //Is allied
+        if (nextSquare.player === this.player) { //Is allied
             return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
             this.moveUp(newX, startY, board, possibleMoves);
         }
         possibleMoves.push([newX, startY])
@@ -51,9 +50,9 @@ export class Rook extends Piece {
     moveRight = (startX, startY, board, possibleMoves) => {
         let newY = startY+1;
         let nextSquare = board[startX][newY];
-        if (!nextSquare || nextSquare.player == this.player) { //Is allied
+        if (!nextSquare || nextSquare.player === this.player) { //Is allied
             return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
             this.moveRight(startX, newY, board, possibleMoves);
         }
         possibleMoves.push([startX, newY])
@@ -64,9 +63,9 @@ export class Rook extends Piece {
     moveLeft = (startX, startY, board, possibleMoves) => {
         let newY = startY-1;
         let nextSquare = board[startX][newY];
-        if (!nextSquare || nextSquare.player == this.player) { //Is allied
+        if (!nextSquare || nextSquare.player === this.player) { //Is allied
             return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
             this.moveLeft(startX, newY, board, possibleMoves);
         }
         possibleMoves.push([startX, newY])
@@ -76,9 +75,9 @@ export class Rook extends Piece {
         let newX = startX-1;
         if (newX < 0) return;
         let nextSquare = board[newX][startY];
-        if (nextSquare.player == this.player) { //Is allied
+        if (nextSquare.player === this.player) { //Is allied
             return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
             this.moveDown(newX, startY, board, possibleMoves);
         }
         possibleMoves.push([newX, startY])

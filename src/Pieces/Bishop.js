@@ -28,9 +28,9 @@ export class Bishop extends Piece {
       if (nextX > -1 && nextX < 8 && nextY > -1 && nextY < 8) {
 
       let nextSquare = board[nextX][nextY];
-      if (nextSquare.player == this.player) {//Is allied
+      if (nextSquare.player === this.player) {//Is allied
         return;
-      } else if (nextSquare.pieceType == "Empty") {
+      } else if (nextSquare.pieceType === "Empty") {
         this.moveUpLeft(nextX, nextY, board, possibleMoves);
       }
       possibleMoves.push([nextX,nextY])
@@ -42,9 +42,9 @@ export class Bishop extends Piece {
       if (nextX > -1 && nextX < 8 && nextY > -1 && nextY < 8) {
 
         let nextSquare = board[nextX][nextY];
-        if (nextSquare.player == this.player) {//Is allied
+        if (nextSquare.player === this.player) {//Is allied
           return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
           this.moveUpRight(nextX, nextY, board, possibleMoves);
         }
         possibleMoves.push([nextX,nextY])
@@ -56,9 +56,9 @@ export class Bishop extends Piece {
       if (nextX > -1 && nextX < 8 && nextY > -1 && nextY < 8) {
 
         let nextSquare = board[nextX][nextY];
-        if (nextSquare.player == this.player) {//Is allied
+        if (nextSquare.player === this.player) {//Is allied
           return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
           this.moveDownRight(nextX, nextY, board, possibleMoves);
         }
         possibleMoves.push([nextX,nextY])
@@ -70,9 +70,9 @@ export class Bishop extends Piece {
       if (nextX > -1 && nextX < 8 && nextY > -1 && nextY < 8) {
 
         let nextSquare = board[nextX][nextY];
-        if (nextSquare.player == this.player) {//Is allied
+        if (nextSquare.player === this.player) {//Is allied
           return;
-        } else if (nextSquare.pieceType == "Empty") {
+        } else if (nextSquare.pieceType === "Empty") {
           this.moveDownLeft(nextX, nextY, board, possibleMoves);
         }
         possibleMoves.push([nextX,nextY])

@@ -1,4 +1,3 @@
-import React from 'react'
 
 export class Piece {
     constructor (player, x, y) {
@@ -9,7 +8,7 @@ export class Piece {
       this.x = x;
       this.y = y;
       this.pieceType = 'Piece'
-      this.direction = player == 1 ? 1 : -1;
+      this.direction = player === 1 ? 1 : -1;
       this.targeted = false;
       this.targets = [];
 
