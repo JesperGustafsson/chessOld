@@ -11,7 +11,7 @@ import { King } from './Pieces/King'
 
 import Board from './Componets/Board'
 
-const socket = io("https://vast-basin-84821.herokuapp.com/",  { autoConnect: true } );
+const socket = io("https://limitless-shelf-54190.herokuapp.com",  { autoConnect: true } );
 //const socket = io("http://localhost:4000",  { autoConnect: true } );
 
 
