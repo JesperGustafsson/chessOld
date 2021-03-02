@@ -26,16 +26,25 @@ io.on('connection', function(socket) {
       playerID=playerID-1;
     });
 
+    socket.on('join room', (roomName) => {
+      socket.join(roomName);
+      console.log("someon joined a room!", roomName)
 
+    })
+
+    socket.on('send ping', (roomName) => {
+      console.log("ping sent!")
+      socket.broadcast.to(roomName).emit('ping received');
+    })
 
     //Sets currentPlayer to next
-    socket.on('next player', ({ currentPlayer, board }) => {
+    socket.on('next player', ({ currentPlayer, board, roomName }) => {
 
-      console.log("next player!1", currentPlayer);
+      console.log("next player!1", currentPlayer, roomName);
       currentPlayer == 1 ? currentPlayer = 2 : currentPlayer = 1;
       console.log("next player!2", currentPlayer);
      // console.log(board);
-      socket.broadcast.emit('new player', { newCurrentPlayer: currentPlayer, newBoard: board })
+      socket.broadcast.to(roomName).emit('new player', { newCurrentPlayer: currentPlayer, newBoard: board })
     });
 });
 

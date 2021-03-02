@@ -11,8 +11,8 @@ import { King } from './Pieces/King'
 
 import Board from './Componets/Board'
 
-const socket = io.connect("https://limitless-shelf-54190.herokuapp.com");
-//const socket = io("http://localhost:4000",  { autoConnect: true } );
+//const socket = io.connect("https://limitless-shelf-54190.herokuapp.com");
+const socket = io("http://localhost:4000",  { autoConnect: true } );
 
 socket.emit('test')
 
@@ -117,6 +117,8 @@ function App( { player } ) {
   const [message, setMessage] = useState();
 
   const [currentState, setCurrentState] = useState("yeet")
+
+  const [roomName, setRoomName] = useState()
 
 
   const makeNewBoard = (board, newCurrentPlayer) => {
@@ -242,6 +244,10 @@ function App( { player } ) {
         setCurrentPlayer(newCurrentPlayer);
         setCurrentState("SELECTING");
       });
+
+      socket.on('ping received', () => {
+        console.log('ping received!')
+      });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -345,7 +351,7 @@ function App( { player } ) {
 
             setCurrentState("SELECTING")
           } else {
-            socket.emit("next player", { currentPlayer, board });
+            socket.emit("next player", { currentPlayer, board, roomName});
             setCurrentState("WAITING");
           }
         } else {
@@ -357,11 +363,27 @@ function App( { player } ) {
       }
   }
 
+  const handleJoinRoom = () => {
+    socket.emit('join room', roomName)
+  }
+
+  const sendPing = () => {
+    socket.emit('send ping', roomName)
+  }
+
+
+
   return (
 
     <div className="App">
       <header className="App-header">
         <h3>You are player {playerID}</h3>
+        <p>You are in room 
+          <input type="text" value={roomName} 
+          onChange={e=>setRoomName(e.target.value)}/>
+          <button onClick={e=> handleJoinRoom()}>Enter room!</button>
+          <button onClick={e=> sendPing()}>Send ping!</button> 
+        </p>
         <Board onSelectPiece={(position) => move(position)} board={board}/>
         <p>Current player: {currentPlayer}</p>
         <p>{message || '--'}</p>
