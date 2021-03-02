@@ -7,7 +7,7 @@ export const Container = styled.div`
   width:40px;
   background-color: ${ props => props.selected ? "#555555" : props.bgc };
   padding: 0em;
-  font-size: 15px;
+  font-size: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
