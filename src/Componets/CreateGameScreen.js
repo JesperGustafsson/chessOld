@@ -23,9 +23,6 @@ const GameInfo = styled.div`
     justify-content: center;
 
 `;
-const Credentials = styled.div`
-
-`;
 const Username = styled.input`
     border: none;
     height: 2em;

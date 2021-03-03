@@ -372,9 +372,9 @@ function App( { player } ) {
     setRoomName(romName);
     socket.emit('join room', romName)
   }
-  const sendPing = () => {
+/*   const sendPing = () => {
     socket.emit('send ping', roomName)
-  }
+  } */
 
   const [roomName, setRoomName] = useState()
 
