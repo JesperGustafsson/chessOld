@@ -15,8 +15,11 @@ const Welcome = styled.div`
 const Title = styled.h1`
 
 `;
-const Instructions = styled.h2`
-
+const Instructions = styled.h3`
+    >p {
+        font-size: 24px;
+        font-weight: 300;
+    }
 `;
 const GameInfo = styled.div`
     display: flex;
@@ -65,7 +68,8 @@ const CreateGameScreen = ({handleJoinRoom}) => {
                     Welcome to Chess!
                 </Title>
                 <Instructions>  
-                    Enter a username and room name below and we'll either locate or create a Game with that gamenumber for you.
+                    Enter a username and room name below and we'll either locate or create a Game with that room name for you. 
+                    <p>Castling, stalemate and en passant is not implemented yet.</p>
                 </Instructions>
             </Welcome>
             <GameInfo>   
