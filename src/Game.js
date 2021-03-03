@@ -28,7 +28,7 @@ function App( { player } ) {
 
   const initializeBoard = () => {
     //P = Piece, O = Pawn
-/*     const strLayout = [
+    const strLayout = [
      ["R","N","B","K","Q","B","N","R"],
      ["P","P","P","P","P","P","P","P"],
      ["-","-","-","-","-","-","-","-"],
@@ -38,9 +38,9 @@ function App( { player } ) {
      ["p","p","p","p","p","p","p","p"],
      ["r","n","b","k","q","b","n","r"]
         ];
- */
 
-    const strLayout = [
+
+/*     const strLayout = [
       ["-","-","-","-","-","-","-","-"],
       ["-","-","-","-","-","-","-","-"],
       ["-","-","-","-","-","-","-","-"],
@@ -49,7 +49,7 @@ function App( { player } ) {
       ["-","-","-","-","-","-","-","-"],
       ["-","-","-","-","-","-","-","-"],
       ["-","-","-","-","-","-","-","-"],
-        ];
+        ]; */
 
     //Creates empty array which the board will be set as as init
     let layoutBoard = [];
