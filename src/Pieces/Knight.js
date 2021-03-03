@@ -67,5 +67,7 @@ export class Knight extends Piece {
 
       this.targets = possibleMoves;
 
+     // console.log('board', board) 
+     // console.log('this.targets', this, this.targets)
     }
   }

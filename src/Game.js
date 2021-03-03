@@ -28,7 +28,7 @@ function App( { player } ) {
 
   const initializeBoard = () => {
     //P = Piece, O = Pawn
-    const strLayout = [
+/*     const strLayout = [
      ["R","N","B","K","Q","B","N","R"],
      ["P","P","P","P","P","P","P","P"],
      ["-","-","-","-","-","-","-","-"],
@@ -37,6 +37,18 @@ function App( { player } ) {
      ["-","-","-","-","-","-","-","-"],
      ["p","p","p","p","p","p","p","p"],
      ["r","n","b","k","q","b","n","r"]
+        ];
+ */
+
+    const strLayout = [
+      ["-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-"],
+      ["-","-","-","N","n","-","-","-"],
+      ["-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-"],
         ];
 
     //Creates empty array which the board will be set as as init
@@ -166,7 +178,6 @@ function App( { player } ) {
   }
 
   const tryCheck = (newBoard, newCurrentPlayer) => {
-//    console.log("tryChevk.start", board,newBoard)
     
     for (var row of newBoard) {
       for (var piece of row) {
@@ -175,7 +186,6 @@ function App( { player } ) {
         if (piece.player !== newCurrentPlayer && dangerSquares) {
           for (let dangerSquare of dangerSquares) {
             if (newBoard[dangerSquare[0]][dangerSquare[1]].pieceType === "King") {
-              console.log("CHECK M8")
               setMessage("YOURE CHECKED AT ", dangerSquare," BY ", piece," M8")
             
               return true;
@@ -184,43 +194,42 @@ function App( { player } ) {
         }
       }
     }
-    console.log("tryChevk.end")
     return false;
   }
 
 
   const tryChecked = (newBoard, newCurrentPlayer) => {
-
+    console.log('tryChecked')
     let mated = true;
     let checked = false;
 
     checked = tryCheck(newBoard, newCurrentPlayer);
 
-    for (var row of newBoard) {
-      for (var piece of row) {
-        if (piece.player === newCurrentPlayer) {
-          for (var indx in piece.targets) {
-            let move = piece.targets[indx]
-            //Try one possible move
-            if (move) {
-              let oldPiece = newBoard[move[0]][move[1]];
-              newBoard[move[0]][move[1]] = piece;
-              newBoard[piece.x][piece.y] = new Empty(-1, piece.x, piece.y)
-              if (!tryCheck(newBoard, newCurrentPlayer)) {
-                console.log("NOT MATED!!!!", piece, " to ", move[0],move[1], newBoard)
-                mated = false;
-              };
-              //reset move
-              newBoard[move[0]][move[1]] = oldPiece;
-              newBoard[piece.x][piece.y] = piece;
+    //this might go wrong.. without the checked check a pieces targets gets wonky.
+    if (checked) {
+      for (var row of newBoard) {
+        for (var piece of row) {
+          if (piece.player === newCurrentPlayer) {
+            for (var indx in piece.targets) {
+              let move = piece.targets[indx]
+              //Try one possible move
+              if (move) {
+                let oldPiece = newBoard[move[0]][move[1]];
+                newBoard[move[0]][move[1]] = piece;
+                newBoard[piece.x][piece.y] = new Empty(-1, piece.x, piece.y)
+                if (!tryCheck(newBoard, newCurrentPlayer)) {
+                  mated = false;
+                };
+                //reset move
+                newBoard[move[0]][move[1]] = oldPiece;
+                newBoard[piece.x][piece.y] = piece;
+              }
             }
-
           }
         }
       }
     }
-    console.log("tryChecked.end")
-    console.log('mated', mated);
+
     if (mated) {
       setMessage("You have been mated!")
     } else if (checked) {
@@ -235,7 +244,6 @@ function App( { player } ) {
 
 
     socket.once('io emit', ({msg, newPlayerID}) => {
-      console.log("NEWPLAYER: ", newPlayerID)
       setPlayerID(newPlayerID);
       newPlayerID%2 === 1 ? setCurrentState("SELECTING") : setCurrentState("WAITING");
 
@@ -243,7 +251,6 @@ function App( { player } ) {
   
       //Is called when a move has been made by one of the players, updating the current player, current state and board. Also called multiple times for some reason, fix???
       socket.on('new player', ( { newCurrentPlayer, newBoard }) => {
-        console.log("newBoard:", newBoard)
         makeNewBoard(newBoard, newCurrentPlayer);
         setCurrentPlayer(newCurrentPlayer);
         setCurrentState("SELECTING");
@@ -254,7 +261,6 @@ function App( { player } ) {
       });
 
       socket.on('game start', () => {
-        console.log("game started!!")
         setGameStatus('PLAYING')
       })
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -374,7 +380,6 @@ function App( { player } ) {
 
 
   const handleJoinRoom = (romName, userName) => {
-    console.log("WOOO", romName, roomName, userName)
     setRoomName(romName);
     setGameStatus('WAITING')
     socket.emit('join room', romName)
