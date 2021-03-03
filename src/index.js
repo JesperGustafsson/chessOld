@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import Game from './Game';
 import reportWebVitals from './reportWebVitals';
 import styled from 'styled-components'
 
@@ -13,7 +14,7 @@ const Container = styled.div`
 ReactDOM.render(
   <React.StrictMode>
     <Container>
-      <App player={1}/>
+      <App/>
 {/*       <App player={2}/>
  */}    </Container>
   </React.StrictMode>,

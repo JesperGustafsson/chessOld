@@ -14,8 +14,9 @@ app.get('/', (req, res) => {
 
 io.on('connection', function(socket) {
     console.log(`a user ${playerID} connected`);
-    socket.emit("io emit", { msg:`Welcome, player ${playerID}!`, newPlayerID:playerID });
+  //  socket.emit("io emit", { msg:`Welcome, player ${playerID}!`, newPlayerID:playerID });
    // playerID=playerID*-1;
+    socket.nickname = playerID; 
     playerID++;
     socket.on("socket emit", () => {
         io.emit("io emit-two", "The server noticed that you clicked something!");
@@ -27,6 +28,17 @@ io.on('connection', function(socket) {
     });
 
     socket.on('join room', (roomName) => {
+      const clientsInRoom = io.sockets.adapter.rooms.get(roomName) 
+      if (!clientsInRoom) { //room has no clients -> first player!
+         socket.emit("io emit", { msg:`Welcome, player 1!`, newPlayerID:1 });
+      } else if (clientsInRoom.size > 1) {
+        console.log("room is full!")
+        console.log(clientsInRoom, clientsInRoom.size)
+        
+      } else {
+        socket.emit("io emit", { msg:`Welcome, player2!`, newPlayerID:2 });
+
+      }
       socket.join(roomName);
       console.log("someon joined a room!", roomName)
 
