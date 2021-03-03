@@ -200,7 +200,7 @@ function App( { player } ) {
 
   const tryChecked = (newBoard, newCurrentPlayer) => {
     console.log('tryChecked')
-    let mated = true;
+    let mated = false;
     let checked = false;
 
     checked = tryCheck(newBoard, newCurrentPlayer);
