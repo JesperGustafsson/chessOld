@@ -12,9 +12,10 @@ import { King } from './Pieces/King'
 import CreateGameScreen from './Componets/CreateGameScreen'
 
 import Board from './Componets/Board'
+import WaitingRoom from './Componets/WaitingRoom';
 
-const socket = io.connect("https://limitless-shelf-54190.herokuapp.com");
-//const socket = io("http://localhost:4000",  { autoConnect: true } );
+//const socket = io.connect("https://limitless-shelf-54190.herokuapp.com");
+const socket = io("http://localhost:4001",  { autoConnect: true } );
 
 socket.emit('test')
 
@@ -251,6 +252,11 @@ function App( { player } ) {
       socket.on('ping received', () => {
         console.log('ping received!')
       });
+
+      socket.on('game start', () => {
+        console.log("game started!!")
+        setGameStatus('PLAYING')
+      })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -370,6 +376,7 @@ function App( { player } ) {
   const handleJoinRoom = (romName, userName) => {
     console.log("WOOO", romName, roomName, userName)
     setRoomName(romName);
+    setGameStatus('WAITING')
     socket.emit('join room', romName)
   }
 /*   const sendPing = () => {
@@ -377,6 +384,7 @@ function App( { player } ) {
   } */
 
   const [roomName, setRoomName] = useState()
+  const [gameStatus, setGameStatus] = useState('JOINING')
 
   return (
 
@@ -384,10 +392,24 @@ function App( { player } ) {
 
 <header className="App-header">
 
-    {roomName ? 
-        <>
         
-        <Board onSelectPiece={(position) => move(position)} board={board}/>
+        {gameStatus === 'JOINING' ? 
+        <>
+          <CreateGameScreen
+          handleJoinRoom={handleJoinRoom}/>
+        </>
+
+        : gameStatus === 'WAITING' ? 
+        
+          <>
+          <WaitingRoom 
+          roomName={roomName}/>
+          </>
+
+        :
+
+        <>
+         <Board onSelectPiece={(position) => move(position)} board={board}/>
         <div>
           <h2>You are in room {roomName}</h2>
           <h3>You are player {playerID}</h3>
@@ -395,15 +417,6 @@ function App( { player } ) {
           <p>{message || '--'}</p>
           <p>STATUS: {currentState}</p>
         </div>
-     
-
-        
-        </>
-
-        :
-        <>
-        <CreateGameScreen
-        handleJoinRoom={handleJoinRoom}/>
         </>
     }
        </header>
