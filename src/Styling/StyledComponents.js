@@ -12,8 +12,8 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
   border: solid 1px #000000;
-  color: ${props => props.color ? props.color : "white"}; //testing purposes
-  -webkit-user-select: none; /* Safari */        
+  border-color: ${props => props.selected ? 'black' : 'white'};
+  color: ${props => props.color ? props.color : "red"};
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
