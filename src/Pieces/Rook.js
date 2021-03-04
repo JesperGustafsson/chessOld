@@ -5,7 +5,7 @@ export class Rook extends Piece {
     constructor (player, x, y) {
       super(player, x, y);
       this.hp = 3;
-      this.graphic = "♖"
+      this.graphic = "♜"
       this.pieceType = 'Rook'
       this.direction = player === 1 ? 1 : -1;
      

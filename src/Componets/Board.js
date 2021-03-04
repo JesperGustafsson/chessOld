@@ -13,7 +13,7 @@ import Square from './Square'
            {
           row.map((col, indexX) => {
             //{console.log("BOARD RERENDER!!")}
-            return (<Square selected = {col.selected} bgc={col.player === 1 ? "#339933" : col.player === -1 ? "#222222" : "#993333"} onSelectPiece={onSelectPiece} position = {[col.x,col.y]} graphic={`${col.graphic}`}></Square>)
+            return (<Square color = {col.player === 1 ? 'white' : 'black' } selected = {col.selected} bgc={(col.x%2===1 && col.y%2===0) || (col.x%2===0 && col.y%2===1) ? '#88BB55' : '#BB5555'} onSelectPiece={onSelectPiece} position = {[col.x,col.y]} graphic={`${col.graphic}`}></Square>)
           })
             }
           </Row>)

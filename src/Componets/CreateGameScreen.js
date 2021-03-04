@@ -56,8 +56,6 @@ const CreateGameScreen = ({handleJoinRoom}) => {
 
     const handleClick = e => {
         e.preventDefault();
-        console.log(userName);
-        console.log(roomName)
         handleJoinRoom(roomName, userName)
     }
 
@@ -74,7 +72,7 @@ const CreateGameScreen = ({handleJoinRoom}) => {
             </Welcome>
             <GameInfo>   
                
-                 <Username placeholder={`Enter your username here`} value={userName} onChange={e=>setUserName(e.target.value)}/>   
+                <Username placeholder={`Enter your username here`} value={userName} onChange={e=>setUserName(e.target.value)}/>   
                 
                 <RoomName placeholder={`Enter your roomname here`} value={roomName} onChange={e=>setRoomName(e.target.value)}/>   
             </GameInfo>

@@ -5,7 +5,7 @@ export class Knight extends Piece {
     constructor (player, y, x) {
       super(player, y, x);
       this.hp = 3;
-      this.graphic = "♘"
+      this.graphic = "♞"
       this.pieceType = 'Knight'
     }
 

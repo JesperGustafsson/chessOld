@@ -1,9 +1,9 @@
 import { Container } from '../Styling/StyledComponents'
 
-export const Square = ( {selected, bgc, graphic, position, onSelectPiece} ) => {
+export const Square = ( {color, selected, bgc, graphic, position, onSelectPiece} ) => {
 
     return (
-      <Container selected = {selected} bgc={bgc} onClick={(e) => {onSelectPiece(position);} } >{ graphic }</Container>
+      <Container color = {color} elected = {selected} bgc={bgc} onClick={(e) => {onSelectPiece(position);} } >{ graphic }</Container>
     )
   }
   
