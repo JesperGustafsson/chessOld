@@ -5,14 +5,14 @@ import styled from 'styled-components'
 export const Container = styled.div`
   height:40px;
   width:40px;
-  background-color: ${ props => props.selected ? "#EEEEEE" : props.bgc };
+  background-color: ${ props => props.selected ? '#AAFFAA' : props.bgc };
   padding: 0em;
   font-size: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
   border: solid 1px #000000;
-  border-color: ${props => props.selected ? 'black' : 'white'};
+  border-color: black;
   color: ${props => props.color ? props.color : "red"};
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
