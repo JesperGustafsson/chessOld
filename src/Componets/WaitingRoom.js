@@ -5,7 +5,9 @@ const Container = styled.div`
     background-color: #333333;
     padding: 2em;
     margin-top: 5em;
-    width: 760px;
+    width: 80vw;
+    max-width: 500px;
+    border: solid 1px black;
 
     >b {
         color: #339933;

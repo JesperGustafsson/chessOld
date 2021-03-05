@@ -1,6 +1,8 @@
 import './App.css';
 import { useState, useEffect } from 'react'
 import io from 'socket.io-client'
+import styled from 'styled-components'
+
 import { Empty } from './Pieces/Empty'
 import { Pawn } from './Pieces/Pawn'
 import { Rook } from './Pieces/Rook'
@@ -18,6 +20,20 @@ const socket = io("https://limitless-shelf-54190.herokuapp.com", { autoConnect: 
 //const socket = io("http://localhost:4001",  { autoConnect: false } );
 
 socket.emit('test')
+
+const RoomTitle = styled.span`
+  color: #339933;
+  font-weight: 900;
+
+`;
+
+const PlayerColor = styled.span`
+  color: ${props => props.player === 1 ? 'white' : 'black'};
+  color: ${props => props.player === 1 ? 'white' : 'black'};
+  font-weight: 900;
+  font-size: 26px;
+
+`;
 
 function App( { player } ) {
 
@@ -416,6 +432,7 @@ function App( { player } ) {
           socket.emit('game over draw')
         } else if (check) {
           setMessage('You have been checked.')
+          setCurrentState("SELECTING");
         } else {
           setCurrentState("SELECTING");
         }
@@ -451,7 +468,6 @@ function App( { player } ) {
         setMessage('You win!')
         setCurrentState('GAME OVER - WIN')
       });
-
 
       socket.on('game over draw', () => {
         setMessage(`It's a draw!`)
@@ -625,13 +641,15 @@ function App( { player } ) {
         :
 
         <>
-         <Board onSelectPiece={(position) => move(position)} board={board}/>
+        <h2>You are in the room <RoomTitle>'{roomName}'</RoomTitle></h2>
+        <p>You are playing as <PlayerColor player={playerID}>{playerID === 1 ? 'White' : 'Black'}</PlayerColor></p>
+
+         <Board player={playerID} onSelectPiece={(position) => move(position)} board={board}/>
         <div>
-          <h2>You are in room {roomName}</h2>
-          <h3>You are player {playerID}</h3>
-          <p>Current player: {currentPlayer}</p>
-          <p>{message || '--'}</p>
-          <p>STATUS: {currentState}</p>
+          {/* <p>Current player: {currentPlayer}</p>
+          <p>It is currently {currentPlayer === 1 ? 'White' : 'Black'}'s turn to move</p>
+ */}          <p>{message || '--'}</p>
+{/*           <p>STATUS: {currentState}</p> */}
         </div>
         </>
     }

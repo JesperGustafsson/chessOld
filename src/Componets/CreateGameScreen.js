@@ -6,7 +6,11 @@ const Container = styled.div`
     background-color: #333333;
     padding: 2em;
     margin-top: 5em;
-    width: 760px;
+    max-width: 520px;
+    width: 80vw;
+    border: solid 1px black;
+
+
 `;
 
 const Welcome = styled.div`
@@ -25,17 +29,21 @@ const GameInfo = styled.div`
     display: flex;
     justify-content: center;
 
+    @media(max-width: 500px) {
+        flex-direction: column;
+    }
+
 `;
 const Username = styled.input`
     border: none;
     height: 2em;
-    padding: 0.25em;
+    padding: 0.25em 1em;
     margin: 0.25em;
 `;
 const RoomName = styled.input`
     border:none;
     height: 2em;
-    padding: 0.25em;
+    padding: 0.25em 1em;
     margin: 0.25em;
 `;
 
@@ -43,7 +51,7 @@ const Button = styled.button`
     background-color: #227722;
     border: none;
     height: 4em;
-    width: 8em;
+    width: 100%;
     font-size: 20px;
     margin-top: 1em;
 
@@ -67,7 +75,7 @@ const CreateGameScreen = ({handleJoinRoom}) => {
                 </Title>
                 <Instructions>  
                     Enter a username and room name below and we'll either locate or create a Game with that room name for you. 
-                    <p>Castling, stalemate and en passant is not implemented yet.</p>
+                    <p>Castling and en passant is not implemented yet.</p>
                 </Instructions>
             </Welcome>
             <GameInfo>   

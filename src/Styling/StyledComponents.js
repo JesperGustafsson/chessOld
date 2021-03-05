@@ -7,23 +7,20 @@ export const Container = styled.div`
   width:40px;
   background-color: ${ props => props.selected ? '#AAFFAA' : props.bgc };
   padding: 0em;
-  font-size: 35px;
+  font-size: 36px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: solid 1px #000000;
-  border-color: black;
+  border: solid 1px black;
   color: ${props => props.color ? props.color : "red"};
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
-
-
 `;
 
 
 export const Row = styled.div`
-  background-color: green;
+ // background-color: green;
   display: flex;
 `;
 
