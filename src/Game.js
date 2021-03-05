@@ -403,10 +403,10 @@ function App( { player } ) {
 
   const movePiece = (piece, newSelectedPiece, posX, posY) => {
 
-    const sourceX = piece.x;
+  /*   const sourceX = piece.x;
     const sourceY = piece.y;
     const targetX = newSelectedPiece.x;
-    const targetY = newSelectedPiece.y;
+    const targetY = newSelectedPiece.y; */
 
     const newBoard = copyBoard(board);
     
