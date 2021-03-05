@@ -45,14 +45,14 @@ function App( { player } ) {
   const initializeBoard = () => {
     //P = Piece, O = Pawn
     const strLayout = [
-     ["R","N","B","K","Q","B","N","R"],
+     ["R","N","B","Q","K","B","N","R"],
      ["P","P","P","P","P","P","P","P"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
      ["p","p","p","p","p","p","p","p"],
-     ["r","n","b","k","q","b","n","r"]
+     ["r","n","b","q","k","b","n","r"]
         ];
 
 
@@ -586,9 +586,9 @@ function App( { player } ) {
 
             updateTargets(board);
             setCurrentState("SELECTING")
+            setMessage('You will be checked if you move there')
           } else {  //if move is possible, send to server which in turn sends it to the opponent
             if (kingMove) {
-              console.log("KING MVOED!!!!")
       //        setKingsPosition([posX, posY]);
             }
             socket.emit("next move", { currentPlayer, board, roomName});
@@ -596,6 +596,7 @@ function App( { player } ) {
             setCurrentState("WAITING");
           }
         } else {
+          setMessage('Your piece cannot move there')
           setCurrentState("SELECTING")
         }
 
