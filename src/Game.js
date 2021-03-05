@@ -433,8 +433,11 @@ function App( { player } ) {
         } else if (check) {
           setMessage('You have been checked.')
           setCurrentState("SELECTING");
+
         } else {
           setCurrentState("SELECTING");
+          setMessage('Your turn!')
+
         }
 
         
