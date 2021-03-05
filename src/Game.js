@@ -16,8 +16,8 @@ import CreateGameScreen from './Componets/CreateGameScreen'
 import Board from './Componets/Board'
 import WaitingRoom from './Componets/WaitingRoom';
 
-const socket = io("https://limitless-shelf-54190.herokuapp.com", { autoConnect: false } );
-//const socket = io("http://localhost:4001",  { autoConnect: false } );
+//const socket = io("https://limitless-shelf-54190.herokuapp.com", { autoConnect: false } );
+const socket = io("http://localhost:4001",  { autoConnect: false } );
 
 socket.emit('test')
 
@@ -187,6 +187,7 @@ function App( { player } ) {
   }
 
   const makeNewBoard = (board, newCurrentPlayer) => {
+    console.log('makeNewBoard.board', board)
     const newBoard = [];
     let y = 0;
 
@@ -400,6 +401,69 @@ function App( { player } ) {
     return checked;
   }
 
+  const movePiece = (piece, newSelectedPiece, posX, posY) => {
+
+    const sourceX = piece.x;
+    const sourceY = piece.y;
+    const targetX = newSelectedPiece.x;
+    const targetY = newSelectedPiece.y;
+
+    const newBoard = copyBoard(board);
+    
+    switch (piece.pieceType) {
+      case ("Pawn"):
+        newBoard[posX][posY] = new Pawn (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y, 0);
+        newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
+        break;
+
+      case ("Rook"):
+        newBoard[posX][posY] = new Rook (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+        newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
+        break;
+
+      case ("Bishop"):
+        newBoard[posX][posY] = new Bishop (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+        newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
+        break;
+
+      case ("Knight"):
+        newBoard[posX][posY] = new Knight (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+        newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
+      break;
+
+      case ("Queen"):
+        newBoard[posX][posY] = new Queen (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+        newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
+        break;
+
+      case ("King"):
+        newBoard[posX][posY] = new King (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+        newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
+        break;
+      default:
+        break;
+    }
+
+
+    //Check if move makes you checked   - Can probably check this in a better way
+    //Update the targets of all targets
+    updateTargets(newBoard);
+  
+    let isChecked = checkCheck(newBoard, currentPlayer);
+    
+      
+    if (isChecked)  {
+      setCurrentState("SELECTING")
+      setMessage('You will be checked if you move there')
+    } else {  //if move is possible, send to server which in turn sends it to the opponent
+      setBoard(newBoard);
+      socket.emit("next move", { currentPlayer, newBoard, roomName});
+      setMessage('Please wait for you opponent to make a move')
+      setCurrentState("WAITING");
+    }
+
+
+  }
 
   useEffect(() => {
     initializeBoard();
@@ -479,7 +543,6 @@ function App( { player } ) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-
   const highlightTargets = (piece, highlight) => {
 
     for (var coords in piece.targets) {
@@ -501,13 +564,11 @@ function App( { player } ) {
 
         //checks if players piece
       if (newSelectedPiece.player === currentPlayer) {
-     //   setKingsPosition([posX, posY]);
 
         setSelectedPiece(newSelectedPiece);
 
         //Highlights targets
         highlightTargets(newSelectedPiece, true);
-
         setCurrentState("TARGETING")
         
       } else {
@@ -516,102 +577,25 @@ function App( { player } ) {
 
     } else if (currentState === "TARGETING") {
 
-      let canMove = false;
+      let targetable = newSelectedPiece.selected ? true : false;
+      if (targetable) {
+        movePiece(selectedPiece, newSelectedPiece, posX, posY)
 
-      //highlightTargets() above sets selected to true on all possible targets
-      //if selected piece has selected == true, the moving piece can target that piece
-      if (newSelectedPiece.selected) canMove = true;
-        //if you can move, set pieces
-        if (canMove) {
+      } else {
+        setMessage('Your piece cannot move there')
+        setCurrentState("SELECTING")
+      }
 
-           //make into a function?
-          var selectedPieceType = selectedPiece.pieceType;
-          var kingMove = false;
-
-          //Moves piece
-          switch (selectedPieceType) {
-            case ("Pawn"):
-              board[posX][posY] = new Pawn (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y, 0);
-              board[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
-              break;
-
-            case ("Rook"):
-              board[posX][posY] = new Rook (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
-              board[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
-              break;
-
-            case ("Bishop"):
-              board[posX][posY] = new Bishop (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
-              board[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
-              break;
-
-            case ("Knight"):
-              board[posX][posY] = new Knight (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
-              board[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
-            break;
-
-            case ("Queen"):
-              board[posX][posY] = new Queen (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
-              board[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
-              break;
-
-            case ("King"):
-              board[posX][posY] = new King (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
-              board[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
-              console.log("king MOVED!")
-              kingMove = true;
-              break;
-            default:
-              break;
-          }
-
-          //Check if move makes you checked   - Can probably check this in a better way
-
-            //Update the targets of all targets
-          updateTargets(board);
-          
-          let isChecked = false;
-          isChecked = checkCheck(board, currentPlayer);
-
-
-          
-            
-          if (isChecked)  { //revert move if checked
-            let oldX = selectedPiece.x;
-            let oldY = selectedPiece.y;
-            let newX = newSelectedPiece.x;
-            let newY = newSelectedPiece.y;
-            board[oldX][oldY] = selectedPiece;
-            board[newX][newY] = newSelectedPiece;
-
-            updateTargets(board);
-            setCurrentState("SELECTING")
-            setMessage('You will be checked if you move there')
-          } else {  //if move is possible, send to server which in turn sends it to the opponent
-            if (kingMove) {
-      //        setKingsPosition([posX, posY]);
-            }
-            socket.emit("next move", { currentPlayer, board, roomName});
-            setMessage('Please wait for you opponent to make a move')
-            setCurrentState("WAITING");
-          }
-        } else {
-          setMessage('Your piece cannot move there')
-          setCurrentState("SELECTING")
-        }
-
-          //unhighlights the targets regardless if the move was valid or not
-        highlightTargets(selectedPiece, false);
+      //unhighlights the targets regardless if the move was valid or not
+      highlightTargets(selectedPiece, false);
       }
   }
-
 
   const handleJoinRoom = (romName, userName) => {
     setRoomName(romName);
     socket.connect();
     socket.emit('join room', romName)
   }
-
 
   const [roomName, setRoomName] = useState()
   const [gameStatus, setGameStatus] = useState('JOINING')
@@ -620,7 +604,7 @@ function App( { player } ) {
 
     <div className="App">
 
-<header className="App-header">
+      <header className="App-header">
 
         
         {gameStatus === 'JOINING' ? 
@@ -650,10 +634,7 @@ function App( { player } ) {
 
          <Board player={playerID} onSelectPiece={(position) => move(position)} board={board}/>
         <div>
-          {/* <p>Current player: {currentPlayer}</p>
-          <p>It is currently {currentPlayer === 1 ? 'White' : 'Black'}'s turn to move</p>
- */}          <p>{message || '--'}</p>
-{/*           <p>STATUS: {currentState}</p> */}
+         <p>{message || '--'}</p>
         </div>
         </>
     }
