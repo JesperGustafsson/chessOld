@@ -16,8 +16,8 @@ import CreateGameScreen from './Componets/CreateGameScreen'
 import Board from './Componets/Board'
 import WaitingRoom from './Componets/WaitingRoom';
 
-//const socket = io("https://limitless-shelf-54190.herokuapp.com", { autoConnect: false } );
-const socket = io("http://localhost:4001",  { autoConnect: false } );
+const socket = io("https://limitless-shelf-54190.herokuapp.com", { autoConnect: false } );
+//const socket = io("http://localhost:4001",  { autoConnect: false } );
 
 socket.emit('test')
 
