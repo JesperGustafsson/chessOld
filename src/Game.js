@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 import { Empty } from './Pieces/Empty'
 import { Pawn } from './Pieces/Pawn'
+import { PassantPawn } from './Pieces/PassantPawn'
 import { Rook } from './Pieces/Rook'
 import { Knight } from './Pieces/Knight'
 import { Bishop } from './Pieces/Bishop'
@@ -198,6 +199,11 @@ function App( { player } ) {
 
         if (piece.pieceType === "Pawn") {
           newPiece = new Pawn (piece.player, piece.x, piece.y, piece.firstMove);
+        } else if (piece.pieceType === "PassantPawn") {
+          if (piece.passant) {
+            newPiece = new PassantPawn (piece.player, piece.x, piece.y, 0);
+          } 
+
         } else if (piece.pieceType === "Rook") {
           newPiece = new Rook (piece.player, piece.x, piece.y);
 
@@ -413,7 +419,17 @@ function App( { player } ) {
     switch (piece.pieceType) {
       case ("Pawn"):
         newBoard[posX][posY] = new Pawn (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y, 0);
+        console.log("enpassant?", Math.abs(posX - selectedPiece.x));
+        if (Math.abs(posX - selectedPiece.x) > 1) {
+          if (selectedPiece.player === 1) newBoard[posX - 1][posY] = new PassantPawn (selectedPiece.player, newSelectedPiece.x - 1, newSelectedPiece.y, 1);
+          else newBoard[posX + 1][posY] = new PassantPawn (selectedPiece.player, newSelectedPiece.x + 1, newSelectedPiece.y, 1);
+        }
         newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
+
+        if (newSelectedPiece.pieceType === "PassantPawn") {
+          if (selectedPiece.player === 1) newBoard[posX - 1][posY] = new Empty (selectedPiece.player, newSelectedPiece.x - 1, newSelectedPiece.y);
+          else newBoard[posX + 1][posY] = new Empty (selectedPiece.player, newSelectedPiece.x + 1, newSelectedPiece.y);
+        } 
         break;
 
       case ("Rook"):
