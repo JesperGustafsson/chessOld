@@ -53,9 +53,6 @@ const HorizontalAxisSquare = styled.div`
 
 `;
 
-const VerticalAxis = styled.div`
-background-color: blue;
-`;
   
   export const Board = ( {player, board, onSelectPiece} ) => {
 
