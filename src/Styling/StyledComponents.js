@@ -22,6 +22,12 @@ export const Container = styled.div`
 export const Row = styled.div`
  // background-color: green;
   display: flex;
+  ::after {
+    content: '${props => props.rowIndex ? props.rowIndex : 'a'}';
+    font-size: 8px;
+    margin-left: -7px;
+    margin-top: 1.75px;
+  } 
 `;
 
 export default Container;
