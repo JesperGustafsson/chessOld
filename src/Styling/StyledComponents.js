@@ -23,22 +23,33 @@ export const Row = styled.div`
  // background-color: green;
   display: flex;
   flex-direction: ${props => props.player === 1 ? 'row' : 'row-reverse'};
-
     
   ::after {
   content: '${props => props.player === 1 ? props.rowIndex : ''}';
+  width: 8px;
   font-size: 8px;
-  margin-left: -7px;    
+  margin-left: -8px;    
   margin-top: 1.75px;
   } 
 
   ::before {
   content: '${props => props.player === 2 ? props.rowIndex : ''}';
   font-size: 8px;
-  margin-left: -7px;    
+  width: 8px;
+  margin-left: -8px;
   margin-top: 1.75px;
   z-index: 1;
+
   } 
+/* 
+  ::before {
+  content: '${props => props.player === 2 ? props.rowIndex : ''}';
+  font-size: 8px;
+  //margin-left: -15px;
+  right: 29px;    
+  margin-top: 1.75px;
+  z-index: 1;
+  }  */
 `;
 
 export default Container;

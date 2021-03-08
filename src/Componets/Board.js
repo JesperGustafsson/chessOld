@@ -7,7 +7,8 @@ const Container = styled.div`
 //  border-color: black;
 //  display: flex;
 //  flex-direction: ${props => props.player === 1 ? 'column-reverse' : 'column' };
-  box-shadow: .25em .25em .5em .125em black;
+  //justify-content: center;
+  //align-items: center;
 
 /*   ::after {
 
@@ -19,6 +20,8 @@ const Container = styled.div`
 `;
 
 const BoardContainer = styled.div`
+  box-shadow: .25em .25em .5em .125em black;
+
  // border: solid 2px;
   border-color: black;
   display: flex;
@@ -34,10 +37,11 @@ const BoardContainer = styled.div`
 `;
 
 const HorizontalAxis = styled.div`
-
+  position: relative;
 display: flex;
-width: 110%;
-margin-left: ${props => props.player === 1 ? '-21.5px' : '-44px'};
+width: 100%;
+right: 15.5px;
+//margin-left: ${props => props.player === 1 ? '-21.5px' : '-44px'};
 //border: solid 1px black;
 flex-direction: ${props => props.player === 1 ? 'row' : 'row-reverse'};
 
