@@ -16,6 +16,7 @@ import CreateGameScreen from './Componets/CreateGameScreen'
 
 import Board from './Componets/Board'
 import WaitingRoom from './Componets/WaitingRoom';
+import PromotionRow from './Componets/PromotionRow'
 
 const socket = io("https://limitless-shelf-54190.herokuapp.com", { autoConnect: false } );
 //const socket = io("http://localhost:4001",  { autoConnect: false } );
@@ -47,7 +48,7 @@ function App( { player } ) {
     //P = Piece, O = Pawn
     const strLayout = [
      ["R","-","-","-","K","-","N","R"],
-     ["P","P","-","-","P","P","P","P"],
+     ["P","p","-","-","P","P","P","P"],
      ["-","-","p","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
@@ -143,6 +144,7 @@ function App( { player } ) {
   }
 
   const [selectedPiece, setSelectedPiece] = useState();
+  const [targetPiece, setTargetPiece] = useState();
   const [currentPlayer, setCurrentPlayer] = useState(1);
   const [playerID, setPlayerID] = useState();
   const [message, setMessage] = useState();
@@ -412,6 +414,7 @@ function App( { player } ) {
     const targetY = newSelectedPiece.y; */
 
     const newBoard = copyBoard(board);
+    let promoting = false;
     
     switch (piece.pieceType) {
       case ("Pawn"):
@@ -432,8 +435,10 @@ function App( { player } ) {
 
         if (newSelectedPiece.x === 0 || newSelectedPiece.x === 7) {
           console.log("PROMOTION TIME!!")
-          
+          setCurrentState("PROMOTING");
           newBoard[posX][posY] = new Queen (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+          promoting = true;
+
 
         }
                 //promotion 
@@ -442,9 +447,6 @@ function App( { player } ) {
             //wait for selection
             //create new Queen/Knight/etc instead of Pawn
         break;
-
-
-
 
 
       case ("Rook"):
@@ -534,9 +536,14 @@ function App( { player } ) {
     if (isChecked)  {
       setCurrentState("SELECTING")
       setMessage('You will be checked if you move there')
-    } else {  //if move is possible, send to server which in turn sends it to the opponent
+    } else if (promoting) {
+      setTargetPiece(newSelectedPiece)
       setBoard(newBoard);
+      setCurrentState("PROMOTING");
+      setMessage('Choose your promotion')
+    } else {  //if move is possible, send to server which in turn sends it to the opponent
       socket.emit("next move", { currentPlayer, newBoard, roomName});
+      setBoard(newBoard);
       setMessage('Please wait for you opponent to make a move')
       setCurrentState("WAITING");
     }
@@ -667,6 +674,37 @@ function App( { player } ) {
       }
   }
 
+  const promote = ( pieceType ) => {
+    console.log("game.promote ", pieceType)
+
+    switch (pieceType) {
+      case 'Knight': 
+        board[targetPiece.x][targetPiece.y] = new Knight (selectedPiece.player, targetPiece.x, targetPiece.y)
+        break;
+  
+      case 'Bishop': 
+        board[targetPiece.x][targetPiece.y] = new Bishop (selectedPiece.player, targetPiece.x, targetPiece.y)
+        break;
+  
+      case 'Rook': 
+        board[targetPiece.x][targetPiece.y] = new Rook (selectedPiece.player, targetPiece.x, targetPiece.y)
+        break;
+
+      case 'Queen': 
+        board[targetPiece.x][targetPiece.y] = new Queen (selectedPiece.player, targetPiece.x, targetPiece.y)
+        break;
+
+    }
+
+
+
+    let newBoard = copyBoard(board);
+    setBoard(newBoard);
+    console.log('board, newBoard', board, newBoard)
+    socket.emit("next move", { currentPlayer, newBoard, roomName});
+    setMessage('Please wait for you opponent to make a move')
+    setCurrentState("WAITING");  }
+
   const handleJoinRoom = (romName, userName) => {
     setRoomName(romName);
     socket.connect();
@@ -707,7 +745,7 @@ function App( { player } ) {
         <>
         <h2>You are in the room <RoomTitle>'{roomName}'</RoomTitle></h2>
         <p>You are playing as <PlayerColor player={playerID}>{playerID === 1 ? 'White' : 'Black'}</PlayerColor></p>
-
+          {currentState === "PROMOTING" && <PromotionRow promote={promote} player = {playerID}/>}
          <Board player={playerID} onSelectPiece={(position) => move(position)} board={board}/>
         <div>
          <p>{message || '--'}</p>

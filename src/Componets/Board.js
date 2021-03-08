@@ -34,7 +34,6 @@ const BoardContainer = styled.div`
 `;
 
 const HorizontalAxis = styled.div`
-background-color:green;
 
 display: flex;
 width: 100%;
