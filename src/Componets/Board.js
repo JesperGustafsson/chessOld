@@ -36,9 +36,11 @@ const BoardContainer = styled.div`
 const HorizontalAxis = styled.div`
 
 display: flex;
-width: 100%;
-margin-left: -14.5px;
+width: 110%;
+margin-left: ${props => props.player === 1 ? '-21.5px' : '-44px'};
 //border: solid 1px black;
+flex-direction: ${props => props.player === 1 ? 'row' : 'row-reverse'};
+
 
 
 `;
@@ -66,7 +68,7 @@ const HorizontalAxisSquare = styled.div`
         <BoardContainer player={player}> 
       {
         board.map((row, indexY) => {
-         return (<><Row rowIndex = {`${indexY+1}`}>
+         return (<><Row player ={player} rowIndex = {`${indexY+1}`}>
            {
           row.map((col, indexX) => {
             let squareColor = (col.x%2===1 && col.y%2===0) || (col.x%2===0 && col.y%2===1) ? lightSquareColor : darkSquareColor
@@ -79,7 +81,7 @@ const HorizontalAxisSquare = styled.div`
           })
       }
       </BoardContainer>
-      <HorizontalAxis>
+      <HorizontalAxis player = {player}>
           <HorizontalAxisSquare>A</HorizontalAxisSquare>
           <HorizontalAxisSquare>B</HorizontalAxisSquare>
           <HorizontalAxisSquare>C</HorizontalAxisSquare>

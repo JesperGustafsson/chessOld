@@ -22,11 +22,22 @@ export const Container = styled.div`
 export const Row = styled.div`
  // background-color: green;
   display: flex;
+  flex-direction: ${props => props.player === 1 ? 'row' : 'row-reverse'};
+
+    
   ::after {
-    content: '${props => props.rowIndex ? props.rowIndex : 'a'}';
-    font-size: 8px;
-    margin-left: -7px;
-    margin-top: 1.75px;
+  content: '${props => props.player === 1 ? props.rowIndex : ''}';
+  font-size: 8px;
+  margin-left: -7px;    
+  margin-top: 1.75px;
+  } 
+
+  ::before {
+  content: '${props => props.player === 2 ? props.rowIndex : ''}';
+  font-size: 8px;
+  margin-left: -7px;    
+  margin-top: 1.75px;
+  z-index: 1;
   } 
 `;
 
