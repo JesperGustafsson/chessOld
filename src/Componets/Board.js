@@ -44,6 +44,9 @@ right: 15.5px;
 //margin-left: ${props => props.player === 1 ? '-21.5px' : '-44px'};
 //border: solid 1px black;
 flex-direction: ${props => props.player === 1 ? 'row' : 'row-reverse'};
+-moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 
 
 

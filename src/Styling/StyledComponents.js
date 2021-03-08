@@ -23,6 +23,8 @@ export const Row = styled.div`
  // background-color: green;
   display: flex;
   flex-direction: ${props => props.player === 1 ? 'row' : 'row-reverse'};
+
+
     
   ::after {
   content: '${props => props.player === 1 ? props.rowIndex : ''}';

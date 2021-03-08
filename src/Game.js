@@ -746,7 +746,7 @@ function App( { player } ) {
         :
 
         <>
-        <h2>You are in the room <RoomTitle>'{roomName}'</RoomTitle></h2>
+        <h2>You are in the room <RoomTitle>{roomName}</RoomTitle></h2>
         <p>You are playing as <PlayerColor player={playerID}>{playerID === 1 ? 'White' : 'Black'}</PlayerColor></p>
           {currentState === "PROMOTING" && <PromotionRow promote={promote} player = {playerID}/>}
          <Board player={playerID} onSelectPiece={(position) => move(position)} board={board}/>
