@@ -46,14 +46,14 @@ function App( { player } ) {
   const initializeBoard = () => {
     //P = Piece, O = Pawn
     const strLayout = [
-     ["R","-","-","Q","K","B","N","R"],
-     ["P","P","-","P","P","P","P","P"],
+     ["R","-","-","-","K","-","N","R"],
+     ["P","P","-","-","P","P","P","P"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
-     ["p","p","-","p","p","p","p","p"],
-     ["r","-","-","q","k","b","n","r"]
+     ["p","p","-","-","p","p","p","p"],
+     ["r","-","-","q","k","-","n","r"]
         ];
 
 
@@ -108,7 +108,7 @@ function App( { player } ) {
             newPiece = new Bishop(player, x, y)
 
           }else if ("Kk".indexOf(col) > -1) {
-            newPiece = new King(player, x, y)
+            newPiece = new King(player, x, y, true)
            // if (player == playerID) setKingPosition([x, y]);
 
           }else if ("Qq".indexOf(col) > -1) {
@@ -468,14 +468,14 @@ function App( { player } ) {
       case ("King"):
 
         
-        console.log("MOVING TO ", newSelectedPiece)
+        console.log("MOVING TO ", newSelectedPiece, newSelectedPiece.y - selectedPiece.y, Math.abs(newSelectedPiece.y - selectedPiece.y) > 1)
         if (
           (newSelectedPiece.player === selectedPiece.player //Allied
           && newSelectedPiece.pieceType === "Rook"  //Rook
           && !newSelectedPiece.hasNotMoved) // That hasn't moved
           ||
           (newSelectedPiece.pieceType === "Empty" //Empty square
-          && Math.abs((newSelectedPiece.y - selectedPiece.y) > 1))// Two+ squares away
+          && Math.abs(newSelectedPiece.y - selectedPiece.y) > 1)// Two+ squares away
           ) {
             //Queenside
             console.log("CASTLING QUEENSIDE", (newSelectedPiece.y - selectedPiece.y))
@@ -484,16 +484,29 @@ function App( { player } ) {
 
                 //Checking if checked when moving 
 
+              //Step 1
+              newBoard[selectedPiece.x][3] = new King (selectedPiece.player, selectedPiece.x, 3, false)
+              newBoard[selectedPiece.x][4] = new Empty (-1, selectedPiece.x, 4)
+              updateTargets(newBoard)
+              let willBeChecked = checkCheck(newBoard, currentPlayer)
+              if (willBeChecked) {
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!YOU WILL BE CHECKED!!!!!!!!!!!!!!!!!!!!!!!")
+                break;
+              }
+              //Step 2
               newBoard[selectedPiece.x][0] = new Empty (-1, selectedPiece.x, 0)
               newBoard[selectedPiece.x][1] = new Empty (-1, selectedPiece.x, 1)
               newBoard[selectedPiece.x][2] = new King (selectedPiece.player, selectedPiece.x, 2, false)
               newBoard[selectedPiece.x][3] = new Rook (selectedPiece.player, selectedPiece.x, 3)
-              newBoard[selectedPiece.x][4] = new Empty (-1, selectedPiece.x, 5)
+              newBoard[selectedPiece.x][4] = new Empty (-1, selectedPiece.x, 4)
 
 
 
                 //Kingsside
             } else {
+
+                              //Checking if checked when moving 
+
               newBoard[selectedPiece.x][4] = new Empty (-1, selectedPiece.x, 4)
               newBoard[selectedPiece.x][5] = new Rook (selectedPiece.player, selectedPiece.x, 5)
               newBoard[selectedPiece.x][6] = new King (selectedPiece.player, selectedPiece.x, 6, false)
@@ -501,14 +514,7 @@ function App( { player } ) {
             }
 
             console.log("AYY CASTLING BA_YBEEE")
-          }                 
-          //Castling
-          //Check if selected square is (1,3? || 1, 6)(White) or (8,3 || 8,6)(Black)
-            //Check if King unmoved
-              //Check if squares between empty
-                //New newboard at each move towards castling piece
-                  //Check if checked
-                    //Move both rook and king
+          }
         
           else {
             newBoard[posX][posY] = new King (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y, false);
