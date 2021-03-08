@@ -1,12 +1,14 @@
 import Piece from './Piece'
+//import copyBoard from '../Game'
 
 
 export class King extends Piece {
-    constructor (player, y, x) {
+    constructor (player, y, x, hasNotMoved) {
       super(player, y, x);
       this.hp = 3;
       this.graphic = "♚"
       this.pieceType = 'King'
+      this.hasNotMoved = hasNotMoved;
     }
 
     getPossibleMoves = (board) => {
@@ -21,6 +23,35 @@ export class King extends Piece {
           }
         }
       }
+        //Castling
+        console.log('before castling', this)
+      if  (!this.hasNotMoved && this.y === 4) {
+        //Queenside
+        if (board[this.x][this.y-4].pieceType === "Rook") {
+          if ((board[this.x][this.y-3].pieceType === "Empty") && (board[this.x][this.y-2].pieceType === "Empty") && (board[this.x][this.y-1].pieceType === "Empty")) {
+            possibleMoves.push([this.x, this.y - 2]);
+            board[this.x][this.y-4].selected = true;
+         //   let newBoard = copyBoard(board);
+          }
+        }
+        //Kingsside
+        if (board[this.x][this.y+3].pieceType === "Rook") {
+          if ((board[this.x][this.y+2].pieceType === "Empty") && (board[this.x][this.y+1].pieceType === "Empty")) {
+            possibleMoves.push([this.x, this.y + 2]);
+            board[this.x][this.y+3].selected = true;
+         //   let newBoard = copyBoard(board);
+          }
+        }
+
+      }
+
+      //Castling
+      //Check if selected square is (1,3? || 1, 6)(White) or (8,3 || 8,6)(Black)
+        //Check if King unmoved
+          //Check if squares between empty
+            //New newboard at each move towards castling piece
+              //Check if checked
+                //Move both rook and king
 
       this.targets = possibleMoves;
     }

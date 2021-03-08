@@ -75,7 +75,7 @@ const CreateGameScreen = ({handleJoinRoom}) => {
                 </Title>
                 <Instructions>  
                     Enter a username and room name below and we'll either locate or create a Game with that room name for you. 
-                    <p>Castling and en passant is not implemented yet.</p>
+                    <p>Castling and promotion is not implemented yet.</p>
                 </Instructions>
             </Welcome>
             <GameInfo>   

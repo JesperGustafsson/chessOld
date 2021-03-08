@@ -46,14 +46,14 @@ function App( { player } ) {
   const initializeBoard = () => {
     //P = Piece, O = Pawn
     const strLayout = [
-     ["R","N","B","Q","K","B","N","R"],
-     ["P","P","P","P","P","P","P","P"],
+     ["R","-","-","Q","K","B","N","R"],
+     ["P","P","-","P","P","P","P","P"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
-     ["p","p","p","p","p","p","p","p"],
-     ["r","n","b","q","k","b","n","r"]
+     ["p","p","-","p","p","p","p","p"],
+     ["r","-","-","q","k","b","n","r"]
         ];
 
 
@@ -174,7 +174,7 @@ function App( { player } ) {
           newPiece = new Queen (piece.player, piece.x, piece.y);
 
         } else if (piece.pieceType === "King") {
-          newPiece = new King (piece.player, piece.x, piece.y);
+          newPiece = new King (piece.player, piece.x, piece.y, piece.hasNotMoved);
         }
 
 
@@ -217,7 +217,7 @@ function App( { player } ) {
           newPiece = new Queen (piece.player, piece.x, piece.y);
 
         } else if (piece.pieceType === "King") {
-          newPiece = new King (piece.player, piece.x, piece.y);
+          newPiece = new King (piece.player, piece.x, piece.y, piece.hasNotMoved);
         }
 
 
@@ -420,17 +420,30 @@ function App( { player } ) {
       case ("Pawn"):
         newBoard[posX][posY] = new Pawn (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y, 0);
         console.log("enpassant?", Math.abs(posX - selectedPiece.x));
+
+        //Creating a passant pawn 
         if (Math.abs(posX - selectedPiece.x) > 1) {
           if (selectedPiece.player === 1) newBoard[posX - 1][posY] = new PassantPawn (selectedPiece.player, newSelectedPiece.x - 1, newSelectedPiece.y, 1);
           else newBoard[posX + 1][posY] = new PassantPawn (selectedPiece.player, newSelectedPiece.x + 1, newSelectedPiece.y, 1);
         }
         newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
 
+        //attacking a passant pawn kills its pawn
         if (newSelectedPiece.pieceType === "PassantPawn") {
           if (selectedPiece.player === 1) newBoard[posX - 1][posY] = new Empty (selectedPiece.player, newSelectedPiece.x - 1, newSelectedPiece.y);
           else newBoard[posX + 1][posY] = new Empty (selectedPiece.player, newSelectedPiece.x + 1, newSelectedPiece.y);
         } 
+
+                //promotion 
+          //check if at rank 1 or 8
+            //show a promotion screen
+            //wait for selection
+            //create new Queen/Knight/etc instead of Pawn
         break;
+
+
+
+
 
       case ("Rook"):
         newBoard[posX][posY] = new Rook (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
@@ -453,8 +466,55 @@ function App( { player } ) {
         break;
 
       case ("King"):
-        newBoard[posX][posY] = new King (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
-        newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
+
+        
+        console.log("MOVING TO ", newSelectedPiece)
+        if (
+          (newSelectedPiece.player === selectedPiece.player //Allied
+          && newSelectedPiece.pieceType === "Rook"  //Rook
+          && !newSelectedPiece.hasNotMoved) // That hasn't moved
+          ||
+          (newSelectedPiece.pieceType === "Empty" //Empty square
+          && Math.abs((newSelectedPiece.y - selectedPiece.y) > 1))// Two+ squares away
+          ) {
+            //Queenside
+            console.log("CASTLING QUEENSIDE", (newSelectedPiece.y - selectedPiece.y))
+            if ((newSelectedPiece.y - selectedPiece.y) < 0) {
+              console.log("inside if", selectedPiece, newSelectedPiece)
+
+                //Checking if checked when moving 
+
+              newBoard[selectedPiece.x][0] = new Empty (-1, selectedPiece.x, 0)
+              newBoard[selectedPiece.x][1] = new Empty (-1, selectedPiece.x, 1)
+              newBoard[selectedPiece.x][2] = new King (selectedPiece.player, selectedPiece.x, 2, false)
+              newBoard[selectedPiece.x][3] = new Rook (selectedPiece.player, selectedPiece.x, 3)
+              newBoard[selectedPiece.x][4] = new Empty (-1, selectedPiece.x, 5)
+
+
+
+                //Kingsside
+            } else {
+              newBoard[selectedPiece.x][4] = new Empty (-1, selectedPiece.x, 4)
+              newBoard[selectedPiece.x][5] = new Rook (selectedPiece.player, selectedPiece.x, 5)
+              newBoard[selectedPiece.x][6] = new King (selectedPiece.player, selectedPiece.x, 6, false)
+              newBoard[selectedPiece.x][7] = new Empty (-1, selectedPiece.x, 7)
+            }
+
+            console.log("AYY CASTLING BA_YBEEE")
+          }                 
+          //Castling
+          //Check if selected square is (1,3? || 1, 6)(White) or (8,3 || 8,6)(Black)
+            //Check if King unmoved
+              //Check if squares between empty
+                //New newboard at each move towards castling piece
+                  //Check if checked
+                    //Move both rook and king
+        
+          else {
+            newBoard[posX][posY] = new King (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y, false);
+            newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
+          }
+
         break;
       default:
         break;
