@@ -48,10 +48,10 @@ function App( { player } ) {
     const strLayout = [
      ["R","-","-","-","K","-","N","R"],
      ["P","P","-","-","P","P","P","P"],
+     ["-","-","p","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
-     ["-","-","-","-","-","-","-","-"],
-     ["-","-","-","-","-","-","-","-"],
+     ["-","-","P","-","-","-","-","-"],
      ["p","p","-","-","p","p","p","p"],
      ["r","-","-","q","k","-","n","r"]
         ];
@@ -277,7 +277,6 @@ function App( { player } ) {
 
   const checkStaleMate = (board, playerID) => {
     let originBoard = copyBoard(board);
-    console.log('checkStaleMate START', originBoard)
     let mated = true;
     let tempBoard = copyBoard(originBoard)
 
@@ -307,14 +306,12 @@ function App( { player } ) {
       }
     }
 
-    console.log('checkStaleMate END', mated)
 
 
     return mated;
   }
 
   const checkCheck = (board, playerID) => {
-    console.log("checkCheck function START", board, playerID)
     //Get the Kings Coordinates //kingsPosition not working for some reason
   //  console.log('kingsPosition', kingsPosition)
 
@@ -383,7 +380,6 @@ function App( { player } ) {
 
       if ((board[targetX][targetY].pieceType === 'Bishop'
         || board[targetX][targetY].pieceType === 'Queen')) {
-          console.log("I'm in boss")
         checked = true;
       }
     }
@@ -403,9 +399,10 @@ function App( { player } ) {
     }
 
 
-    console.log('checked', checked)
     return checked;
   }
+
+
 
   const movePiece = (piece, newSelectedPiece, posX, posY) => {
 
@@ -419,7 +416,6 @@ function App( { player } ) {
     switch (piece.pieceType) {
       case ("Pawn"):
         newBoard[posX][posY] = new Pawn (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y, 0);
-        console.log("enpassant?", Math.abs(posX - selectedPiece.x));
 
         //Creating a passant pawn 
         if (Math.abs(posX - selectedPiece.x) > 1) {
@@ -434,6 +430,12 @@ function App( { player } ) {
           else newBoard[posX + 1][posY] = new Empty (selectedPiece.player, newSelectedPiece.x + 1, newSelectedPiece.y);
         } 
 
+        if (newSelectedPiece.x === 0 || newSelectedPiece.x === 7) {
+          console.log("PROMOTION TIME!!")
+          
+          newBoard[posX][posY] = new Queen (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+
+        }
                 //promotion 
           //check if at rank 1 or 8
             //show a promotion screen
@@ -468,7 +470,6 @@ function App( { player } ) {
       case ("King"):
 
         
-        console.log("MOVING TO ", newSelectedPiece, newSelectedPiece.y - selectedPiece.y, Math.abs(newSelectedPiece.y - selectedPiece.y) > 1)
         if (
           (newSelectedPiece.player === selectedPiece.player //Allied
           && newSelectedPiece.pieceType === "Rook"  //Rook
@@ -478,9 +479,7 @@ function App( { player } ) {
           && Math.abs(newSelectedPiece.y - selectedPiece.y) > 1)// Two+ squares away
           ) {
             //Queenside
-            console.log("CASTLING QUEENSIDE", (newSelectedPiece.y - selectedPiece.y))
             if ((newSelectedPiece.y - selectedPiece.y) < 0) {
-              console.log("inside if", selectedPiece, newSelectedPiece)
 
                 //Checking if checked when moving 
 
@@ -490,7 +489,6 @@ function App( { player } ) {
               updateTargets(newBoard)
               let willBeChecked = checkCheck(newBoard, currentPlayer)
               if (willBeChecked) {
-                console.log("!!!!!!!!!!!!!!!!!!!!!!!YOU WILL BE CHECKED!!!!!!!!!!!!!!!!!!!!!!!")
                 break;
               }
               //Step 2
@@ -513,7 +511,6 @@ function App( { player } ) {
               newBoard[selectedPiece.x][7] = new Empty (-1, selectedPiece.x, 7)
             }
 
-            console.log("AYY CASTLING BA_YBEEE")
           }
         
           else {
@@ -591,7 +588,6 @@ function App( { player } ) {
 
       socket.on('redirect waiting room', ( {player}) => {
         setGameStatus('WAITING')
-        console.log('redirected to waiting room', player)
         setPlayerID(player);
         if (player === 1) {
           setCurrentState("SELECTING") 
@@ -603,13 +599,11 @@ function App( { player } ) {
       });
 
       socket.on('redirect room full', () => {
-        console.log("GAME WAS FULL")
         setGameStatus('ROOM FULL')
         socket.disconnect();
       });
 
       socket.on('game start', () => {
-        console.log('game starting!')
         setGameStatus('PLAYING')
       })
 

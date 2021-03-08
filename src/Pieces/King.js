@@ -24,7 +24,6 @@ export class King extends Piece {
         }
       }
         //Castling
-        console.log('before castling', this)
       if  (this.hasNotMoved && this.y === 4) {
         //Queenside
         if (board[this.x][this.y-4].pieceType === "Rook") {

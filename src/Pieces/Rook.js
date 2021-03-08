@@ -15,14 +15,12 @@ export class Rook extends Piece {
 
     getPossibleMoves = (board) => {
 
-        console.log("///getPossibleMoves.board", board, this, this.x, this.y)
         let possibleMoves = [];
 
         let startX = this.x;
         let startY = this.y;
 
 
-        console.log(startX, startY)
 
         this.moveUp(startX, startY, board, possibleMoves);
 
@@ -42,7 +40,6 @@ export class Rook extends Piece {
     moveUp = (startX, startY, board, possibleMoves) => {
         let newX = startX+1;
         if (newX && newX > 7) return;
-        console.log('board, newX', board, newX, startY)
         let nextSquare = board[newX][startY];
         if (nextSquare.player === this.player) { //Is allied
             return;
