@@ -47,14 +47,14 @@ function App( { player } ) {
   const initializeBoard = () => {
     //P = Piece, O = Pawn
     const strLayout = [
-     ["R","-","-","-","K","-","N","R"],
-     ["P","p","-","-","P","P","P","P"],
-     ["-","-","p","-","-","-","-","-"],
+     ["R","N","B","Q","K","B","N","R"],
+     ["P","P","P","P","P","P","P","P"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
-     ["-","-","P","-","-","-","-","-"],
-     ["p","p","-","-","p","p","p","p"],
-     ["r","-","-","q","k","-","n","r"]
+     ["-","-","-","-","-","-","-","-"],
+     ["-","-","-","-","-","-","-","-"],
+     ["p","p","p","p","p","p","p","p"],
+     ["r","n","b","q","k","b","n","r"]
         ];
 
 
@@ -692,6 +692,9 @@ function App( { player } ) {
 
       case 'Queen': 
         board[targetPiece.x][targetPiece.y] = new Queen (selectedPiece.player, targetPiece.x, targetPiece.y)
+        break;
+
+      default:
         break;
 
     }
