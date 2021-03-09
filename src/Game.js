@@ -26,7 +26,6 @@ socket.emit('test')
 const RoomTitle = styled.span`
   color: #339933;
   font-weight: 900;
-
 `;
 
 const PlayerColor = styled.span`
@@ -39,14 +38,12 @@ const PlayerColor = styled.span`
 
 function App( { player } ) {
 
-
-
   const [board, setBoard] = useState([[]])
 
-
   const initializeBoard = () => {
-    //P = Piece, O = Pawn
-    const strLayout = [
+    /* R = Rook, N = Knight, B = Bishop, Q = Queen, K = King, P = Pawn
+       Uppercase = Player 1 (white), Lowercase = Player 2 (black) */ 
+    const startingBoardLayout = [
      ["R","N","B","Q","K","B","N","R"],
      ["P","P","P","P","P","P","P","P"],
      ["-","-","-","-","-","-","-","-"],
@@ -57,29 +54,17 @@ function App( { player } ) {
      ["r","n","b","q","k","b","n","r"]
         ];
 
-
-/*     const strLayout = [
-      ["-","-","-","Q","-","-","-","K"],
-      ["-","-","-","-","-","-","-","-"],
-      ["-","-","-","-","-","-","-","-"],
-      ["-","-","-","-","-","-","-","-"],
-      ["-","-","-","-","-","-","-","-"],
-      ["-","-","-","-","-","-","-","-"],
-      ["-","-","-","-","-","-","Q","-"],
-      ["-","k","-","-","-","-","-","-"],
-        ]; */
-
-    //Creates empty array which the board will be set as as init
-    let layoutBoard = [];
+    //Creates an empty array which be filled with Pieces.
+    let startingBoard = [];
 
     //Starting position at (0,0)
     let y = 0;
     let x = 0;
 
-    for (var row of strLayout) {
+    for (var row of startingBoardLayout) {
 
       //Creates empty array (row) for the board
-      layoutBoard.push([]);
+      startingBoard.push([]);
       
       //Every col in row is a square
       for (var col of row) {
@@ -97,7 +82,8 @@ function App( { player } ) {
 
           //What type of piece?
           if ("Pp".indexOf(col) > -1) {
-            newPiece = new Pawn(player, x, y, 1)
+                             //(player, x, y, hasMoved)
+            newPiece = new Pawn(player, x, y, true)
 
           } else if ("Rr".indexOf(col) > -1) {
             newPiece = new Rook(player, x, y)
@@ -110,18 +96,14 @@ function App( { player } ) {
 
           }else if ("Kk".indexOf(col) > -1) {
             newPiece = new King(player, x, y, true)
-           // if (player == playerID) setKingPosition([x, y]);
 
           }else if ("Qq".indexOf(col) > -1) {
-
             newPiece = new Queen(player, x, y)
-
-          } else {
           }
         }
         
         //Pushes the new square onto the row and ++s the x(col)-coordinate
-        layoutBoard[x].push(newPiece);
+        startingBoard[x].push(newPiece);
         y++;
         }
         //++s the y(row) coordinate and resets the x(col)-coordinate to 0
@@ -129,16 +111,17 @@ function App( { player } ) {
         y=0;
       }
 
-    updateTargets(layoutBoard);
+    //Updates the targets of the pieces.
+    updateTargets(startingBoard);
   
     //Sets the board
-    setBoard(layoutBoard);
+    setBoard(startingBoard);
   }
 
   const updateTargets = (board) => {
     for (var row of board) {
       for (var piece of row) {
-        piece.getPossibleMoves(board);
+        piece.getPossibleMoves(board); //Breaks when I change the name of the function... 
       }
     }
   }
@@ -149,8 +132,6 @@ function App( { player } ) {
   const [playerID, setPlayerID] = useState();
   const [message, setMessage] = useState();
   const [currentState, setCurrentState] = useState()
-//  const [kingsPosition, setKingsPosition] = useState()
-
 
   const copyBoard = (board, newCurrentPlayer) => {
     const newBoard = [];
@@ -162,7 +143,7 @@ function App( { player } ) {
         let newPiece = new Empty(-1, piece.x, piece.y)
 
         if (piece.pieceType === "Pawn") {
-          newPiece = new Pawn (piece.player, piece.x, piece.y, piece.firstMove);
+          newPiece = new Pawn (piece.player, piece.x, piece.y, piece.hasNotMoved);
         } else if (piece.pieceType === "Rook") {
           newPiece = new Rook (piece.player, piece.x, piece.y);
 
@@ -179,7 +160,6 @@ function App( { player } ) {
           newPiece = new King (piece.player, piece.x, piece.y, piece.hasNotMoved);
         }
 
-
         newBoard[y].push(newPiece);
         
       }
@@ -190,7 +170,6 @@ function App( { player } ) {
   }
 
   const makeNewBoard = (board, newCurrentPlayer) => {
-    console.log('makeNewBoard.board', board)
     const newBoard = [];
     let y = 0;
 
@@ -234,14 +213,12 @@ function App( { player } ) {
   }
 
   const copyPiece = (piece) => {
-
-
     let pieceType = piece.pieceType;
     let copyPiece;
     
     switch (pieceType) {
       case ("Pawn"):      
-        copyPiece = new Pawn(piece.player, piece.x, piece.y);
+        copyPiece = new Pawn(piece.player, piece.x, piece.y, piece.hasNotMoved);
         break;
 
       case ("Rook"):
@@ -261,16 +238,14 @@ function App( { player } ) {
         break;
 
       case ("King"):
-        copyPiece = new King(piece.player, piece.x, piece.y);
+        copyPiece = new King(piece.player, piece.x, piece.y, piece.hasNotMoved);
         break;
 
       case ("Empty"):
         copyPiece = new Empty(-1, piece.x, piece.y);
         break;
-        ;
 
       default:
-        
         break;
     }
 
@@ -279,21 +254,19 @@ function App( { player } ) {
 
   const checkStaleMate = (board, playerID) => {
     let originBoard = copyBoard(board);
-    let mated = true;
     let tempBoard = copyBoard(originBoard)
 
     for (var row of originBoard) {
       for (var piece of row) {
         if (piece.player === playerID) {
-     //     console.log('piece', piece)
           for (var target of piece.targets) {
+
             tempBoard = copyBoard(originBoard);
-      //      console.log('tempBoard(before)', tempBoard)
-            tempBoard[target[0]][target[1]] = copyPiece(piece);
+
+            tempBoard[target[0]][target[1]] = copyPiece(piece); //
             tempBoard[target[0]][target[1]].x = target[0];
             tempBoard[target[0]][target[1]].y = target[1];
             tempBoard[piece.x][piece.y] = new Empty (-1, piece.x, piece.y);
-   //         console.log('tempBoard(after)', tempBoard)
 
             updateTargets(tempBoard);
             
@@ -309,27 +282,28 @@ function App( { player } ) {
     }
 
 
-
-    return mated;
+    /* If not able to escape from the check without getting checked, return true (checkmated) */
+    return true;
   }
 
   const checkCheck = (board, playerID) => {
-    //Get the Kings Coordinates //kingsPosition not working for some reason
-  //  console.log('kingsPosition', kingsPosition)
 
-    let checked = false;
-
+    /*  Rather than check if the King is in a pieces targets, this function creates a dummy piece with the Kings coordinates,
+        and checks if a piece of the same type is within its targets.
+        //NOTE: Should probably check get the targets of all types and check targets once rather than check targets for each type one after another.
+    */
     let dummyPiece;
     let dummyPieceX;
     let dummyPieceY; 
-    //let dummyPiecePlayer = playerID === 1 ? 2: 1;
 
+    /* Get the Kings coordinates. I tried to save the kings coordinates as a usestate each time it moves, but for some reason it gives errors. 
+    Instead I look through each square until I find the piece and set the dummy piece to the kings coorindates */
     for (var row of board) {
       for (var piece of row) {
-      //  console.log('piece(checkcheck)', piece)
         if (piece.pieceType === "King" && piece.player === playerID) {
           dummyPieceX = piece.x;
           dummyPieceY = piece.y;
+          //TODO: should probably break out of these two for-loops when the king has been found...
         }
       }
     }
@@ -340,152 +314,127 @@ function App( { player } ) {
 
     //Go through dummy pieces targets and see if there is a similar piece targetable
     for (var target of dummyPiece.targets) {
-  //    console.log('target', target)
       let targetX = target[0];
       let targetY = target[1];
 
       if (board[targetX][targetY].pieceType === 'Pawn') {
-        checked = true;
+        return true;
       }
     }
 
-        //Makes dummy piece (ROOK, QUEEN) at kings location 
     dummyPiece = new Rook(playerID, dummyPieceX, dummyPieceY);
     dummyPiece.getPossibleMoves(board)
 
-    //Go through dummy pieces targets and see if there is a similar piece targetable
     for ( target of dummyPiece.targets) {
-   //   console.log('target', target)
       let targetX = target[0];
       let targetY = target[1];
-
 
       if ((board[targetX][targetY].pieceType === 'Rook' ||
            board[targetX][targetY].pieceType === 'Queen')) {
-        checked = true;
+        return true;      
       }
     }
 
-            //Makes dummy piece (BISHOP, QUEEN) at kings location 
     dummyPiece = new Bishop(playerID, dummyPieceX, dummyPieceY);
     dummyPiece.getPossibleMoves(board)
 
-    //Go through dummy pieces targets and see if there is a similar piece targetable
     for ( target of dummyPiece.targets) {
       let targetX = target[0];
       let targetY = target[1];
-/* 
-      console.log(board[targetX][targetY])
-      console.log('ayy', board[targetX][targetY].pieceType === 'Bishop',
-      board[targetX][targetY].pieceType === 'Queen', playerID === piece.player) */
-
 
       if ((board[targetX][targetY].pieceType === 'Bishop'
         || board[targetX][targetY].pieceType === 'Queen')) {
-        checked = true;
+        return true;      
       }
     }
 
-                //Makes dummy piece (KNIGHT) at kings location 
     dummyPiece = new Knight(playerID, dummyPieceX, dummyPieceY);
     dummyPiece.getPossibleMoves(board)
 
-    //Go through dummy pieces targets and see if there is a similar piece targetable
     for ( target of dummyPiece.targets) {
       let targetX = target[0];
       let targetY = target[1];
 
       if (board[targetX][targetY].pieceType === 'Knight') {
-        checked = true;
+        return true;
       }
     }
 
-
-    return checked;
+    return false;
   }
 
+  const movePiece = (sourcePiece, targetSquare, posX, posY) => {
 
-
-  const movePiece = (piece, newSelectedPiece, posX, posY) => {
-
-  /*   const sourceX = piece.x;
-    const sourceY = piece.y;
-    const targetX = newSelectedPiece.x;
-    const targetY = newSelectedPiece.y; */
-
+    /* Creates a copy of the board to edit, rather than editing the board directly, before setting the board if it is a legal move */
     const newBoard = copyBoard(board);
     let promoting = false;
     
-    switch (piece.pieceType) {
+    switch (sourcePiece.pieceType) {
       case ("Pawn"):
-        newBoard[posX][posY] = new Pawn (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y, 0);
+        newBoard[posX][posY] = new Pawn (selectedPiece.player, targetSquare.x, targetSquare.y, 0);
 
-        //Creating a passant pawn 
+        //Creating a passant pawn when moving two squares
         if (Math.abs(posX - selectedPiece.x) > 1) {
-          if (selectedPiece.player === 1) newBoard[posX - 1][posY] = new PassantPawn (selectedPiece.player, newSelectedPiece.x - 1, newSelectedPiece.y, 1);
-          else newBoard[posX + 1][posY] = new PassantPawn (selectedPiece.player, newSelectedPiece.x + 1, newSelectedPiece.y, 1);
+          if (selectedPiece.player === 1) newBoard[posX - 1][posY] = new PassantPawn (selectedPiece.player, targetSquare.x - 1, targetSquare.y, 1);
+          else newBoard[posX + 1][posY] = new PassantPawn (selectedPiece.player, targetSquare.x + 1, targetSquare.y, 1);
         }
         newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
 
         //attacking a passant pawn kills its pawn
-        if (newSelectedPiece.pieceType === "PassantPawn") {
-          if (selectedPiece.player === 1) newBoard[posX - 1][posY] = new Empty (selectedPiece.player, newSelectedPiece.x - 1, newSelectedPiece.y);
-          else newBoard[posX + 1][posY] = new Empty (selectedPiece.player, newSelectedPiece.x + 1, newSelectedPiece.y);
+        if (targetSquare.pieceType === "PassantPawn") {
+          if (selectedPiece.player === 1) newBoard[posX - 1][posY] = new Empty (selectedPiece.player, targetSquare.x - 1, targetSquare.y);
+          else newBoard[posX + 1][posY] = new Empty (selectedPiece.player, targetSquare.x + 1, targetSquare.y);
         } 
 
-        if (newSelectedPiece.x === 0 || newSelectedPiece.x === 7) {
+        //A Pawn is promoted at rank 0 and 7.
+        if (targetSquare.x === 0 || targetSquare.x === 7) {
           console.log("PROMOTION TIME!!")
           setCurrentState("PROMOTING");
-          newBoard[posX][posY] = new Queen (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+
+          //Sets the promoted piece to a Queen for a start, as that is probably the wanted promotion, just in case something goes wrong.
+          newBoard[posX][posY] = new Queen (selectedPiece.player, targetSquare.x, targetSquare.y);
           promoting = true;
 
-
         }
-                //promotion 
-          //check if at rank 1 or 8
-            //show a promotion screen
-            //wait for selection
-            //create new Queen/Knight/etc instead of Pawn
+
         break;
 
 
       case ("Rook"):
-        newBoard[posX][posY] = new Rook (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+        newBoard[posX][posY] = new Rook (selectedPiece.player, targetSquare.x, targetSquare.y);
         newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
         break;
 
       case ("Bishop"):
-        newBoard[posX][posY] = new Bishop (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+        newBoard[posX][posY] = new Bishop (selectedPiece.player, targetSquare.x, targetSquare.y);
         newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
         break;
 
       case ("Knight"):
-        newBoard[posX][posY] = new Knight (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+        newBoard[posX][posY] = new Knight (selectedPiece.player, targetSquare.x, targetSquare.y);
         newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
       break;
 
       case ("Queen"):
-        newBoard[posX][posY] = new Queen (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y);
+        newBoard[posX][posY] = new Queen (selectedPiece.player, targetSquare.x, targetSquare.y);
         newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
         break;
 
       case ("King"):
 
         
-        if (
-          (newSelectedPiece.player === selectedPiece.player //Allied
-          && newSelectedPiece.pieceType === "Rook"  //Rook
-          && !newSelectedPiece.hasNotMoved) // That hasn't moved
+        if (  //Castling
+          (targetSquare.player === selectedPiece.player //Allied
+          && targetSquare.pieceType === "Rook"  //Rook
+          && !targetSquare.hasNotMoved) // That hasn't moved
           ||
-          (newSelectedPiece.pieceType === "Empty" //Empty square
-          && Math.abs(newSelectedPiece.y - selectedPiece.y) > 1)// Two+ squares away
+          (targetSquare.pieceType === "Empty" //Empty square
+          && Math.abs(targetSquare.y - selectedPiece.y) > 1)// Two+ squares away
           ) {
-            //Queenside
-            if ((newSelectedPiece.y - selectedPiece.y) < 0) {
+            if ((targetSquare.y - selectedPiece.y) < 0) { //Castling Queenside
 
-                //Checking if checked when moving 
 
-              //Step 1
+              //Step 1, move one step and see if checked
               newBoard[selectedPiece.x][3] = new King (selectedPiece.player, selectedPiece.x, 3, false)
               newBoard[selectedPiece.x][4] = new Empty (-1, selectedPiece.x, 4)
               updateTargets(newBoard)
@@ -502,11 +451,19 @@ function App( { player } ) {
 
 
 
-                //Kingsside
-            } else {
+                
+            } else {  //Castling Kingsside
 
-                              //Checking if checked when moving 
+              //Step 1, move one step and see if checked
+              newBoard[selectedPiece.x][5] = new King (selectedPiece.player, selectedPiece.x, 5, false)
+              newBoard[selectedPiece.x][4] = new Empty (-1, selectedPiece.x, 4)
+              updateTargets(newBoard)
+              let willBeChecked = checkCheck(newBoard, currentPlayer)
+              if (willBeChecked) {
+                break;
+              }
 
+              //Step 2
               newBoard[selectedPiece.x][4] = new Empty (-1, selectedPiece.x, 4)
               newBoard[selectedPiece.x][5] = new Rook (selectedPiece.player, selectedPiece.x, 5)
               newBoard[selectedPiece.x][6] = new King (selectedPiece.player, selectedPiece.x, 6, false)
@@ -515,8 +472,8 @@ function App( { player } ) {
 
           }
         
-          else {
-            newBoard[posX][posY] = new King (selectedPiece.player, newSelectedPiece.x, newSelectedPiece.y, false);
+          else { //normal move
+            newBoard[posX][posY] = new King (selectedPiece.player, targetSquare.x, targetSquare.y, false);
             newBoard[selectedPiece.x][selectedPiece.y] = new Empty(-1,selectedPiece.x,selectedPiece.y);
           }
 
@@ -526,18 +483,18 @@ function App( { player } ) {
     }
 
 
-    //Check if move makes you checked   - Can probably check this in a better way
     //Update the targets of all targets
     updateTargets(newBoard);
   
+    //Checks if checked
     let isChecked = checkCheck(newBoard, currentPlayer);
     
       
-    if (isChecked)  {
+    if (isChecked)  { //if checked, start by selecting again.
       setCurrentState("SELECTING")
       setMessage('You will be checked if you move there')
-    } else if (promoting) {
-      setTargetPiece(newSelectedPiece)
+    } else if (promoting) { //if promoting, set board and set current state to 'PROMOTING', asking you to choose which type to promote to.
+      setTargetPiece(targetSquare)
       setBoard(newBoard);
       setCurrentState("PROMOTING");
       setMessage('Choose your promotion')
@@ -547,8 +504,6 @@ function App( { player } ) {
       setMessage('Please wait for you opponent to make a move')
       setCurrentState("WAITING");
     }
-
-
   }
 
   useEffect(() => {
@@ -556,73 +511,66 @@ function App( { player } ) {
     playerID%2 === 1 ? setCurrentState("SELECTING") : setCurrentState("WAITING");
 
 
-    socket.once('io emit', ({msg, newPlayerID}) => {
-      setPlayerID(newPlayerID);
-      newPlayerID%2 === 1 ? setCurrentState("SELECTING") : setCurrentState("WAITING");
+    socket.on('redirect waiting room', ( {player}) => {
+      setGameStatus('WAITING')
+      setPlayerID(player);
+      if (player === 1) {
+        setCurrentState("SELECTING") 
+        setMessage('Your turn!')
+      } else { setCurrentState("WAITING"); 
+      setMessage('Please wait for you opponent to make a move')
+      }
 
     });
+
+    socket.on('redirect room full', () => {
+      setGameStatus('ROOM FULL')
+      socket.disconnect();
+    });
   
-      //Is called when a move has been made by one of the players, updating the current player, current state and board. Also called multiple times for some reason, fix???
-      socket.on('next move received', ( { newCurrentPlayer, newBoard }) => {
-        makeNewBoard(newBoard, newCurrentPlayer);
-        setCurrentPlayer(newCurrentPlayer);
-        //check for stalemate, check and mate
+    socket.on('game start', () => {
+      setGameStatus('PLAYING')
+    })
 
-        let check = checkCheck(newBoard, newCurrentPlayer)//checks if checked
-        let mate = checkStaleMate(newBoard, newCurrentPlayer)
+    socket.on('next move received', ( { newCurrentPlayer, newBoard }) => {
+      makeNewBoard(newBoard, newCurrentPlayer);
+      setCurrentPlayer(newCurrentPlayer);
+      //check for stalemate, check and mate
+
+      let check = checkCheck(newBoard, newCurrentPlayer)//checks if checked
+      let mate = checkStaleMate(newBoard, newCurrentPlayer)
 
 
-        if (check && mate) {
-          setMessage('You have been mated. You lose.')
-          setCurrentState("GAME OVER - LOSS");
-          socket.emit('game over loss')
-        } else if (mate) {
-          setMessage(`You cannot move, it's a draw.`)
-          setCurrentState("GAME OVER - DRAW");
-          socket.emit('game over draw')
-        } else if (check) {
-          setMessage('You have been checked.')
-          setCurrentState("SELECTING");
+      if (check && mate) {
+        setMessage('You have been mated. You lose.')
+        setCurrentState("GAME OVER - LOSS");
+        socket.emit('game over loss')
+      } else if (mate) {
+        setMessage(`You cannot move, it's a draw.`)
+        setCurrentState("GAME OVER - DRAW");
+        socket.emit('game over draw')
+      } else if (check) {
+        setMessage('You have been checked.')
+        setCurrentState("SELECTING");
 
-        } else {
-          setCurrentState("SELECTING");
-          setMessage('Your turn!')
+      } else {
+        setCurrentState("SELECTING");
+        setMessage('Your turn!')
 
-        }
+      }
 
-        
-      });
+      
+    });
 
-      socket.on('redirect waiting room', ( {player}) => {
-        setGameStatus('WAITING')
-        setPlayerID(player);
-        if (player === 1) {
-          setCurrentState("SELECTING") 
-          setMessage('Your turn!')
-        } else { setCurrentState("WAITING"); 
-        setMessage('Please wait for you opponent to make a move')
-        }
+    socket.on('game over win', () => {
+      setMessage('You win!')
+      setCurrentState('GAME OVER - WIN')
+    });
 
-      });
-
-      socket.on('redirect room full', () => {
-        setGameStatus('ROOM FULL')
-        socket.disconnect();
-      });
-
-      socket.on('game start', () => {
-        setGameStatus('PLAYING')
-      })
-
-      socket.on('game over win', () => {
-        setMessage('You win!')
-        setCurrentState('GAME OVER - WIN')
-      });
-
-      socket.on('game over draw', () => {
-        setMessage(`It's a draw!`)
-        setCurrentState('GAME OVER - DRAW')
-      });
+    socket.on('game over draw', () => {
+      setMessage(`It's a draw!`)
+      setCurrentState('GAME OVER - DRAW')
+    });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -675,7 +623,6 @@ function App( { player } ) {
   }
 
   const promote = ( pieceType ) => {
-    console.log("game.promote ", pieceType)
 
     switch (pieceType) {
       case 'Knight': 
@@ -703,7 +650,6 @@ function App( { player } ) {
 
     let newBoard = copyBoard(board);
     setBoard(newBoard);
-    console.log('board, newBoard', board, newBoard)
     socket.emit("next move", { currentPlayer, newBoard, roomName});
     setMessage('Please wait for you opponent to make a move')
     setCurrentState("WAITING");  }
@@ -720,44 +666,35 @@ function App( { player } ) {
   return (
 
     <div className="App">
-
       <header className="App-header">
-
-        
         {gameStatus === 'JOINING' ? 
         <>
           <CreateGameScreen
           handleJoinRoom={handleJoinRoom}/>
         </>
-
         : gameStatus === 'WAITING' ? 
-        
-          <>
+        <>
           <WaitingRoom 
           roomName={roomName}/>
-          </>
+        </>
 
         : gameStatus === 'ROOM FULL' ?
-
-          <>
-            Room is full!
-          </>
+        <>
+          Room is full!
+        </>
 
         :
-
         <>
-        <h2>You are in the room <RoomTitle>{roomName}</RoomTitle></h2>
-        <p>You are playing as <PlayerColor player={playerID}>{playerID === 1 ? 'White' : 'Black'}</PlayerColor></p>
+          <h2>You are in the room <RoomTitle>{roomName}</RoomTitle></h2>
+          <p>You are playing as <PlayerColor player={playerID}>{playerID === 1 ? 'White' : 'Black'}</PlayerColor></p>
           {currentState === "PROMOTING" && <PromotionRow promote={promote} player = {playerID}/>}
-         <Board player={playerID} onSelectPiece={(position) => move(position)} board={board}/>
-        <div>
-         <p>{message || '--'}</p>
-        </div>
+          <Board player={playerID} onSelectPiece={(position) => move(position)} board={board}/>
+          <p>{message || '--'}</p>
         </>
     }
        </header>
-
     </div>
+  
   );
 }
 
