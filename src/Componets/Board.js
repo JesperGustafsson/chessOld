@@ -64,8 +64,8 @@ const HorizontalAxisSquare = styled.div`
   
   export const Board = ( {player, board, onSelectPiece} ) => {
 
-    const darkSquareColor = 'rgba(80, 10, 10, 1)'
-    const lightSquareColor = 'rgba(190, 35, 35, 1)'
+    const darkSquareColor = 'rgba(130, 20, 20, 0.9)'
+    const lightSquareColor = 'rgba(200, 35, 35, 1)'
 
     return (
       <>
