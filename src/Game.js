@@ -562,13 +562,13 @@ function App( { player } ) {
 
       let check = checkCheck(newBoard, newCurrentPlayer)//checks if checked
       let mate = checkStaleMate(newBoard, newCurrentPlayer)
-
+      let audio;
 
       if (check && mate) {
         setMessage('You have been mated. You lose.')
         setCurrentState("GAME OVER - LOSS");
         socket.emit('game over loss')
-        var audio = document.getElementById("lose_sound"); 
+        audio = document.getElementById("lose_sound"); 
         console.log('audio', audio)
 
         audio.play();
@@ -577,18 +577,18 @@ function App( { player } ) {
         setMessage(`You cannot move, it's a draw.`)
         setCurrentState("GAME OVER - DRAW");
         socket.emit('game over draw')
-        var audio = document.getElementById("draw_sound"); 
+        audio = document.getElementById("draw_sound"); 
         audio.play();
       } else if (check) {
         setMessage('You have been checked.')
         setCurrentState("SELECTING");
-        var audio = document.getElementById("check_sound"); 
+        audio = document.getElementById("check_sound"); 
         audio.play();
 
       } else {
         setCurrentState("SELECTING");
         setMessage('Your turn!')
-        var audio = document.getElementById("move_sound"); 
+        audio = document.getElementById("move_sound"); 
         audio.play();
 
       }
