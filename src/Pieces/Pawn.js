@@ -37,12 +37,12 @@ export class Pawn extends Piece {
 
       nextX = this.x+this.direction*(1);
       nextY = this.y+1;
-      if (nextY > 0 && nextY < 7) {
+      if (nextY >= 0 && nextY < 8) {
         if (board[nextX][nextY].pieceType !== "Empty" && board[nextX][nextY].player !== this.player) possibleMoves.push([nextX,nextY]);
       }
 
       nextY = this.y-1;
-      if (nextY > 0 && nextY < 7) {
+      if (nextY >= 0 && nextY < 8) {
         if (board[nextX][nextY].pieceType !== "Empty" && board[nextX][nextY].player !== this.player) possibleMoves.push([nextX,nextY]);
       }
     }
