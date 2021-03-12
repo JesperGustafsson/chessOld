@@ -44,6 +44,17 @@ function App( { player } ) {
     /* R = Rook, N = Knight, B = Bishop, Q = Queen, K = King, P = Pawn
        Uppercase = Player 1 (white), Lowercase = Player 2 (black) */ 
     const startingBoardLayout = [
+     ["-","-","-","-","-","-","-","-"],
+     ["-","-","-","-","-","-","-","-"],
+     ["-","-","-","K","-","P","-","-"],
+     ["-","-","-","-","-","-","-","-"],
+     ["-","-","-","-","-","-","-","-"],
+     ["-","-","-","k","-","-","-","-"],
+     ["-","-","-","-","-","-","-","-"],
+     ["-","-","-","-","-","-","-","-"]
+        ];
+
+/*     const startingBoardLayout = [
      ["R","N","B","Q","K","B","N","R"],
      ["P","P","P","P","P","P","P","P"],
      ["-","-","-","-","-","-","-","-"],
@@ -52,8 +63,7 @@ function App( { player } ) {
      ["-","-","-","-","-","-","-","-"],
      ["p","p","p","p","p","p","p","p"],
      ["r","n","b","q","k","b","n","r"]
-        ];
-
+        ]; */
     //Creates an empty array which be filled with Pieces.
     let startingBoard = [];
 
@@ -179,7 +189,7 @@ function App( { player } ) {
         let newPiece = new Empty(-1, piece.x, piece.y)
 
         if (piece.pieceType === "Pawn") {
-          newPiece = new Pawn (piece.player, piece.x, piece.y, piece.firstMove);
+          newPiece = new Pawn (piece.player, piece.x, piece.y, piece.hasNotMoved);
         } else if (piece.pieceType === "PassantPawn") {
           if (piece.passant) {
             newPiece = new PassantPawn (piece.player, piece.x, piece.y, 0);
@@ -359,6 +369,19 @@ function App( { player } ) {
         return true;
       }
     }
+
+    dummyPiece = new King(playerID, dummyPieceX, dummyPieceY);
+    dummyPiece.getPossibleMoves(board)
+
+    for ( target of dummyPiece.targets) {
+      let targetX = target[0];
+      let targetY = target[1];
+
+      if (board[targetX][targetY].pieceType === 'King') {
+        return true;
+      }
+    }
+
 
     return false;
   }
