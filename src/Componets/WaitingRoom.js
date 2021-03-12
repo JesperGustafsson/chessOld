@@ -17,7 +17,7 @@ const Container = styled.div`
 const WaitingRoom = ({roomName}) => {
     return (
         <Container>
-            This is the waiting room! Please wait for an opponent to join your room or ask someone to join room <b>{roomName}</b>
+            This is the waiting room! Please wait for an opponent to join your room or ask a friend to join room <b>{roomName}</b>
         </Container>
     )
 }

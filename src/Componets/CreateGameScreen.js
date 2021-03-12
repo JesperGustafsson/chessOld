@@ -75,14 +75,13 @@ const CreateGameScreen = ({handleJoinRoom}) => {
                 </Title>
                 <Instructions>  
                     Enter a username and room name below and we'll either locate or create a Game with that room name for you. 
-                    <p>Castling and promotion is not implemented yet.</p>
                 </Instructions>
             </Welcome>
             <GameInfo>   
                
                 <Username placeholder={`Enter your username here`} value={userName} onChange={e=>setUserName(e.target.value)}/>   
                 
-                <RoomName placeholder={`Enter your roomname here`} value={roomName} onChange={e=>setRoomName(e.target.value)}/>   
+                <RoomName placeholder={`Enter your room name here`} value={roomName} onChange={e=>setRoomName(e.target.value)}/>   
             </GameInfo>
             <Button onClick={e=> handleClick(e)}>Click here to join a game!</Button>
         </Container>

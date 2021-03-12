@@ -43,7 +43,7 @@ function App( { player } ) {
   const initializeBoard = () => {
     /* R = Rook, N = Knight, B = Bishop, Q = Queen, K = King, P = Pawn
        Uppercase = Player 1 (white), Lowercase = Player 2 (black) */ 
-    const startingBoardLayout = [
+/*     const startingBoardLayout = [
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","K","-","P","-","-"],
@@ -52,9 +52,9 @@ function App( { player } ) {
      ["-","-","-","k","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"],
      ["-","-","-","-","-","-","-","-"]
-        ];
+        ]; */
 
-/*     const startingBoardLayout = [
+    const startingBoardLayout = [
      ["R","N","B","Q","K","B","N","R"],
      ["P","P","P","P","P","P","P","P"],
      ["-","-","-","-","-","-","-","-"],
@@ -63,7 +63,7 @@ function App( { player } ) {
      ["-","-","-","-","-","-","-","-"],
      ["p","p","p","p","p","p","p","p"],
      ["r","n","b","q","k","b","n","r"]
-        ]; */
+        ];
     //Creates an empty array which be filled with Pieces.
     let startingBoard = [];
 
@@ -568,17 +568,28 @@ function App( { player } ) {
         setMessage('You have been mated. You lose.')
         setCurrentState("GAME OVER - LOSS");
         socket.emit('game over loss')
+        var audio = document.getElementById("lose_sound"); 
+        console.log('audio', audio)
+
+        audio.play();
+
       } else if (mate) {
         setMessage(`You cannot move, it's a draw.`)
         setCurrentState("GAME OVER - DRAW");
         socket.emit('game over draw')
+        var audio = document.getElementById("draw_sound"); 
+        audio.play();
       } else if (check) {
         setMessage('You have been checked.')
         setCurrentState("SELECTING");
+        var audio = document.getElementById("check_sound"); 
+        audio.play();
 
       } else {
         setCurrentState("SELECTING");
         setMessage('Your turn!')
+        var audio = document.getElementById("move_sound"); 
+        audio.play();
 
       }
 
@@ -588,11 +599,16 @@ function App( { player } ) {
     socket.on('game over win', () => {
       setMessage('You win!')
       setCurrentState('GAME OVER - WIN')
+      var audio = document.getElementById("win_sound"); 
+      console.log('audio', audio)
+      audio.play();
     });
 
     socket.on('game over draw', () => {
       setMessage(`It's a draw!`)
       setCurrentState('GAME OVER - DRAW')
+      var audio = document.getElementById("draw_sound"); 
+      audio.play();
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
