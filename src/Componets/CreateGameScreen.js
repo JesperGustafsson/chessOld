@@ -57,6 +57,11 @@ const Button = styled.button`
 
 `;
 
+const Warning = styled.p`
+    color: red;
+
+`;
+
 const CreateGameScreen = ({handleJoinRoom}) => {
 
     const [userName, setUserName] = useState()
@@ -75,6 +80,7 @@ const CreateGameScreen = ({handleJoinRoom}) => {
                 </Title>
                 <Instructions>  
                     Enter a username and room name below and we'll either locate or create a Game with that room name for you. 
+                    <Warning>IMPORTANT: The server is hosted seperately and is asleep if it hasn't been accessed for a while. It can take up to 20 seconds for the server to start after pressing the button to create a room.</Warning>
                 </Instructions>
             </Welcome>
             <GameInfo>   
